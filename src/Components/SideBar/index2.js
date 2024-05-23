@@ -84,7 +84,7 @@ export default function PersistentDrawerLeft(props) {
 
   const fetchCartItemsCount = async () => {
     try {
-      const response = await axios.get('http://localhost:10000/api/cart');
+      const response = await axios.get('https://mcd-pi.vercel.app/cart');
       const cartItems = response.data.data;
       const count = cartItems.length; 
       setCartItemsCount(count);

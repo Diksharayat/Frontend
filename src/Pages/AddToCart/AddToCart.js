@@ -11,7 +11,7 @@ const AddToCart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('http://localhost:10000/api/cart');
+        const response = await axios.get('https://mcd-pi.vercel.app/cart');
         setCartItems(response.data.data); // Assuming the API response includes an array of cart items with image URL
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -23,7 +23,7 @@ const AddToCart = () => {
 
   const handleDelete = async (product_id) => {
     try {
-      await axios.post('http://localhost:10000/api/cart/delete', { product_id });
+      await axios.post('https://mcd-pi.vercel.app//delete', { product_id });
       const updatedItems = cartItems.filter(item => item.product_id !== product_id);
       setCartItems(updatedItems);
     } catch (error) {

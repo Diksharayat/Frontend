@@ -56,7 +56,7 @@ const HappyMeal = () => {
   const addToCart = async (productId, name, description, price, image) => {
     try {
     
-      const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+      const response = await axios.post('https://mcd-pi.vercel.app/add-to-cart', {
         product_id: productId,
         name: name,
         description: description,

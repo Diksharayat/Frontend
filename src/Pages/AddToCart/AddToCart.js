@@ -11,7 +11,7 @@ const AddToCart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('hhttps://mcd-pi.vercel.app/api/cart');
+        const response = await axios.get('https://mcd-pi.vercel.app/api/cart');
         setCartItems(response.data.data); // Assuming the API response includes an array of cart items with image URL
       } catch (error) {
         console.error('Error fetching cart items:', error);

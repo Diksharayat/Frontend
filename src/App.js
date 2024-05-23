@@ -13,6 +13,7 @@ import Happy from "./Pages/Happy";
 import AddToCart from "./Pages/AddToCart/AddToCart";
 import Fries from "./Pages/Fries";
 import CartMapping from "./Pages/Breakfast";
+import Footer from "./Pages/Footer/Footer";
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 
 const router = createBrowserRouter(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
             <Suspense fallback={<div>Loading...</div>}>
               <SideBar>
                 <CartMapping />
+             
               </SideBar>
               </Suspense>
             </>
@@ -41,6 +43,7 @@ const router = createBrowserRouter(
              <Suspense fallback={<div>Loading...</div>}>
               <SideBar>
                 <Burger />
+              
               </SideBar>
               </Suspense>
             </>
@@ -53,6 +56,7 @@ const router = createBrowserRouter(
                <Suspense fallback={<div>Loading...</div>}>
                <SideBar>
                 <Sandwiches />
+             
                 </SideBar>
               </Suspense>
             </>
@@ -65,6 +69,7 @@ const router = createBrowserRouter(
               <Suspense fallback={<div>Loading...</div>}>
               <SideBar>
                 <McNuggets />
+                
                 </SideBar>
               </Suspense>
             </>
@@ -77,6 +82,7 @@ const router = createBrowserRouter(
             <Suspense fallback={<div>Loading...</div>}>
             <SideBar>
                 <Fries />
+             
                 </SideBar>
               </Suspense>
             </>

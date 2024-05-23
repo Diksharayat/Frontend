@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -20,11 +20,12 @@ import frr from "../../assets/Images/frr.jpg";
 import happy from "../../assets/Images/happy.jpg";
 import breakfast from "../../assets/Images/breakfast.jpg";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { Grid, LinearProgress, Menu, MenuItem } from "@mui/material";
+import { Badge, Grid, LinearProgress } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import { SideBarMemoizated } from "./Components/MemoizatedSidebar";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { yellow } from "@mui/material/colors";
+import axios from "axios";
 
 const drawerWidth = 270;
 
@@ -73,30 +74,60 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "center",
 }));
 
+
 export default function PersistentDrawerLeft(props) {
   const [open, setOpen] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
   const navigate = useNavigate();
+
   
-  const drawerRef = React.useRef(null);
+
+  const fetchCartItemsCount = async () => {
+    try {
+      const response = await axios.get('http://localhost:10000/api/cart');
+      const cartItems = response.data.data;
+      const count = cartItems.length; 
+      setCartItemsCount(count);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItemsCount(); 
+
+    
+    const interval = setInterval(fetchCartItemsCount, 1000);
+
+   
+    return () => clearInterval(interval);
+  }, []); 
+
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  
+// Define a custom badge style with MCD yellow color
+const CustomBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#FFD700', // MCD yellow color
+    color: 'black', // Text color of the badge
+  },
+}));
+
+  
 
   const navigateToCart = () => {
     navigate('/addtocart');
   };
 
   return (
+    <>
+    
     <Box sx={{ display: "flex", margin: "-12px", padding: "4px" }}>
       <AppBar
         position="fixed"
@@ -112,7 +143,7 @@ export default function PersistentDrawerLeft(props) {
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{color:"#26120fbd"}}/>
           </IconButton>
           {!open && (
             <img style={{ height: "30px" }} src={logo} alt="LogoWithTagLine" />
@@ -128,13 +159,16 @@ export default function PersistentDrawerLeft(props) {
                 ...(open === false && { display: "none" }),
               }}
             >
-              <MenuIcon />
+              <MenuIcon sx={{color:"#26120fbd"}} />
             </IconButton>
           </Grid>
 
           <Grid sx={{ backgroundColor: "white", color: "black" }}>
             <IconButton onClick={navigateToCart} >
-              <ShoppingCartIcon />
+             
+              <CustomBadge badgeContent={cartItemsCount} color="primary">
+    <ShoppingCartIcon sx={{color:"#DA291C"}}/>
+  </CustomBadge>
             </IconButton>
 
             
@@ -157,7 +191,17 @@ export default function PersistentDrawerLeft(props) {
         anchor="left"
         open={open}
       >
-        <Scrollbars style={{ height: "100%" }}>
+        
+        <Scrollbars style={{ height: "100%", color: "#FFD700"}} renderThumbVertical={({ style, ...props }) => (
+    <div
+      {...props}
+      style={{
+        ...style,
+        backgroundColor: "rgb(255 217 60 / 94%)", // McDonald's yellow
+        borderRadius: "8px", // Optional: customize scrollbar border radius
+      }}
+    />
+  )} >
           <DrawerHeader>
             <IconButton>
               <img
@@ -417,6 +461,9 @@ export default function PersistentDrawerLeft(props) {
           </Box>
         </Suspense>
       </Main>
+     
     </Box>
+   
+   </>
   );
 }

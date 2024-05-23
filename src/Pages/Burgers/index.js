@@ -6,6 +6,8 @@ import hug from "../../assets/Images/hug.jpg"
 import Quater from "../../assets/Images/Quater.jpg"
 import cheese from "../../assets/Images/cheese.jpg"
 import Doublecheese from "../../assets/Images/Doublecheese.jpg"
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const products = [
   {
@@ -27,7 +29,7 @@ const products = [
     name: 'Veg Maharaja Mac Burger',
     description: 'Veg Maharaja Mac Burger',
     price: '$39.99',
-    image:hug     ,
+    image: hug,
   },
   {
     id: 4,
@@ -45,7 +47,7 @@ const products = [
   },
   {
     id: 6,
-    name:  'Double Cheese burger',
+    name: 'Double Cheese burger',
     description: 'Double Cheese burger',
     price: '$69.99',
     image: Doublecheese,
@@ -68,37 +70,55 @@ const Burger = () => {
   };
 
   const addToCartBtnStyle = {
-    backgroundColor: "#ffd93cf0 ",
+    backgroundColor: "#ffd93cf0",
     fontWeight: "900",
-    color:" #26120fbd",
+    color: "#26120fbd",
     padding: "10px 0px",
+  };
+
+  
+  const addToCart = async (productId, name, description, price, image) => {
+    try {
+    
+      const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+        product_id: productId,
+        name: name,
+        description: description,
+        price: price,
+        image: image
+      });
+      toast.success("Item added to the cart");
+      console.log(response.data); 
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
   };
 
   return (
     <div>
-    <Grid container spacing={3}>
-      {products.map(product => (
-        <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
-          <Card style={cardStyle}>
-            <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                {product.name}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {product.description}
-              </Typography>
-              <Typography variant="body1">
-                Price: {product.price}
-              </Typography>
-            </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle}>
-              Add to Cart
-            </Button>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+      <Grid container spacing={3}>
+        {products.map(product => (
+          <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
+            <Card style={cardStyle}>
+              <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+              <CardContent>
+                <Typography variant="h5" gutterBottom>
+                  {product.name}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  {product.description}
+                </Typography>
+                <Typography variant="body1">
+                  Price: {product.price}
+                </Typography>
+              </CardContent>
+              <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+  Add to Cart
+</Button>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </div>
   )
 }

@@ -1,25 +1,13 @@
-// import { Typography } from '@mui/material';
-// import React from 'react'
-
-// const Breakfast = () => {
-//   return (
-//     <div>
-//       <Typography>breakfast</Typography>
-//     </div>
-//   )
-// }
-
-// export default Breakfast;
 import React from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import bacon1 from "../../assets/Images/bacon1.jpg"
 import Egg from "../../assets/Images/Egg.jpg"
 import fruit from "../../assets/Images/fruit.jpg"
 import burrito from "../../assets/Images/burrito.jpg"
 import hotcakes from "../../assets/Images/hotcakes.jpg"
 import EggMeal from "../../assets/Images/EggMeal.jpg"
 import McGriddlesMeal from "../../assets/Images/McGriddlesMeal.jpg"
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const products = [
   {
@@ -78,21 +66,38 @@ const CartMapping = () => {
     transition: 'box-shadow 0.3s ease-in-out',
     '&:hover': {
       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+      cursor: 'pointer', 
     },
   };
+  
 
   const addToCartBtnStyle = {
+    backgroundColor: "#ffd93cf0 ",
+    fontWeight: "900",
+    color: " #26120fbd",
+    padding: "10px 0px",
+  }; 
+
+  const addToCart = async (productId, name, description, price, image) => {
+    try {
     
-        backgroundColor: "#ffd93cf0 ",
-        fontWeight: "900",
-        color:" #26120fbd",
-        padding: "10px 0px",
-    
-    
+      const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+        product_id: productId,
+        name: name,
+        description: description,
+        price: price,
+        image: image
+      });
+      toast.success("Item added to the cart");
+      console.log(response.data); 
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
   };
+  
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={4}>
       {products.map(product => (
         <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
           <Card style={cardStyle}>
@@ -108,9 +113,10 @@ const CartMapping = () => {
                 Price: {product.price}
               </Typography>
             </CardContent>
-            <Button variant="contained"  style={addToCartBtnStyle}>
-              Add to Cart
-            </Button>
+            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+  Add to Cart
+</Button>
+
           </Card>
         </Grid>
       ))}
@@ -119,4 +125,3 @@ const CartMapping = () => {
 };
 
 export default CartMapping;
-

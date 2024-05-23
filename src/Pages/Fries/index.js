@@ -13,6 +13,8 @@ import Tangy  from "../../assets/Images/Tangy.jpg"
 import mustard  from "../../assets/Images/mustard.jpg"
 import mayo  from "../../assets/Images/mayo.jpg"
 import ketch  from "../../assets/Images/ketch.jpg"
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const products = [
   {
@@ -45,6 +47,25 @@ const products = [
   },
   
 ];
+
+
+const addToCart = async (productId, name, description, price, image) => {
+  try {
+  
+    const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+      product_id: productId,
+      name: name,
+      description: description,
+      price: price,
+      image: image
+    });
+    toast.success("Item added to the cart");
+    console.log(response.data); 
+  } catch (error) {
+    console.error('Error adding item:', error);
+  }
+};
+
 
 const Fries = () => {
 
@@ -88,9 +109,9 @@ const Fries = () => {
                 Price: {product.price}
               </Typography>
             </CardContent>
-            <Button variant="contained"  style={addToCartBtnStyle}>
-              Add to Cart
-            </Button>
+            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+  Add to Cart
+</Button>
           </Card>
         </Grid>
       ))}

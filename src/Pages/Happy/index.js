@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import bacon from "../../assets/Images/bacon.jpg"
 import happyHam from "../../assets/Images/happyHam.jpg"
 import happyhug from "../../assets/Images/happyhug.jpg"
 import happymeal2 from "../../assets/Images/happymeal2.jpg"
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const products = [
   {
@@ -29,7 +30,7 @@ const products = [
   },
 ]
 
-const Burger = () => {
+const HappyMeal = () => {
   
   const cardStyle = {
     display: 'flex',
@@ -51,6 +52,23 @@ const Burger = () => {
     padding: "10px 0px",
   };
 
+ 
+  const addToCart = async (productId, name, description, price, image) => {
+    try {
+    
+      const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+        product_id: productId,
+        name: name,
+        description: description,
+        price: price,
+        image: image
+      });
+      toast.success("Item added to the cart");
+      console.log(response.data); 
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
+  };
   return (
     <div>
     <Grid container spacing={3}>
@@ -69,9 +87,9 @@ const Burger = () => {
                 Price: {product.price}
               </Typography>
             </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle}>
-              Add to Cart
-            </Button>
+            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+  Add to Cart
+</Button>
           </Card>
         </Grid>
       ))}
@@ -80,4 +98,4 @@ const Burger = () => {
   )
 }
 
-export default Burger;
+export default HappyMeal;

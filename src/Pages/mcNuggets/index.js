@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import nuggets from "../../assets/Images/nuggets.jpg"
 import nugMeal from "../../assets/Images/nugMeal.jpg"
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const products = [
   {
@@ -19,7 +21,28 @@ const products = [
     image: nugMeal,
   },
 ]
-const Burger = () => {
+
+
+const addToCart = async (productId, name, description, price, image) => {
+  try {
+  
+    const response = await axios.post('http://localhost:10000/api/add-to-cart', {
+      product_id: productId,
+      name: name,
+      description: description,
+      price: price,
+      image: image
+    });
+    toast.success("Item added to the cart");
+    console.log(response.data); 
+  } catch (error) {
+    console.error('Error adding item:', error);
+  }
+};
+
+
+ 
+const McNuggets = () => {
   
   const cardStyle = {
     display: 'flex',
@@ -59,9 +82,9 @@ const Burger = () => {
                 Price: {product.price}
               </Typography>
             </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle}>
-              Add to Cart
-            </Button>
+            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+  Add to Cart
+</Button>
           </Card>
         </Grid>
       ))}
@@ -70,4 +93,4 @@ const Burger = () => {
   )
 }
 
-export default Burger;
+export default McNuggets;

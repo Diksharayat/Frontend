@@ -3,7 +3,6 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import './App.css';
 import { lazy, Suspense } from 'react';
 import PersistentDrawerLeft from "./Components/SideBar/index2";
 import Burger from "./Pages/Burgers";
@@ -13,8 +12,8 @@ import Happy from "./Pages/Happy";
 import AddToCart from "./Pages/AddToCart/AddToCart";
 import Fries from "./Pages/Fries";
 import CartMapping from "./Pages/Breakfast";
-import Footer from "./Pages/Footer/Footer";
 import SliderTemplate from "./Pages/Home";
+import "./App.css";
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 
 const router = createBrowserRouter(

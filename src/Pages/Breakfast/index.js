@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import Egg from "../../assets/Images/Egg.jpg"
 import fruit from "../../assets/Images/fruit.jpg"
+import { styled } from '@mui/material/styles';
 import burrito from "../../assets/Images/burrito.jpg"
 import hotcakes from "../../assets/Images/hotcakes.jpg"
 import EggMeal from "../../assets/Images/EggMeal.jpg"
@@ -56,26 +57,29 @@ const products = [
 
 const CartMapping = () => {
 
-  const cardStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: '100%',
-    borderRadius: '8px',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-    transition: 'box-shadow 0.3s ease-in-out',
-    '&:hover': {
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-      cursor: 'pointer', 
-    },
-  };
-  
+ 
+// Styled component for the card
+const CustomCard = styled(Card)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  height: '100%',
+  padding: theme.spacing(2),
+  borderRadius: theme.spacing(2),
+  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    cursor: 'pointer',
+  },
+}));
 
   const addToCartBtnStyle = {
     backgroundColor: "#ffd93cf0 ",
     fontWeight: "900",
     color: " #26120fbd",
-    padding: "10px 0px",
+    padding: "10px 10px",
   }; 
 
   const addToCart = async (product_id, name, description, price, image) => {
@@ -100,7 +104,7 @@ const CartMapping = () => {
     <Grid container spacing={4}>
       {products.map(product => (
         <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
-          <Card style={cardStyle}>
+         <CustomCard>
             <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
             <CardContent>
               <Typography variant="h5" gutterBottom>
@@ -117,7 +121,7 @@ const CartMapping = () => {
   Add to Cart
 </Button>
 
-          </Card>
+</CustomCard>
         </Grid>
       ))}
     </Grid>

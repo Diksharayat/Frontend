@@ -1,79 +1,86 @@
-import React from 'react';
-import { Slider, Typography, Grid, Card, CardContent } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import spicy from "../../assets/Images/spicy.jpg"
-import mccrispy from "../../assets/Images/mccrispy.jpg"
-import cheese from "../../assets/Images/cheese.jpg"
+import React from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the styles for the carousel
+import { Typography, Button } from "@mui/material";
+import Egg from "../../assets/Images/Egg.jpg";
+import fruit from "../../assets/Images/fruit.jpg";
+import happyHam from "../../assets/Images/happyHam.jpg";
 
-// Styled component for the card
-const CustomCard = styled(Card)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100%',
-  padding: theme.spacing(2),
-  borderRadius: theme.spacing(2),
-  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-}));
 
-// Array of slider items
-const sliderItems = [
-  {
-    title: 'Big Mac',
-    image: spicy,
-    description: 'The one and only Big Mac burger.',
-  },
-  {
-    title: 'Chicken Nuggets',
-    image: mccrispy,
-    description: 'Delicious crispy chicken nuggets.',
-  },
-  {
-    title: 'French Fries',
-    image: cheese,
-    description: 'Golden and crispy french fries.',
-  },
-];
+const HomePageCarousel = () => {
+  const addToCartBtnStyle = {
+    backgroundColor: "#ffd93cf0",
+    fontWeight: "900",
+    color: "#26120fbd",
+    padding: "5px 10px",
+    fontSize: "14px",
+  };
 
-const SliderTemplate = () => {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const slideStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "200px", // Adjust the height of the carousel
+    backgroundColor: "#fff", // Optional: set background color
   };
 
   return (
-    <div style={{ marginTop: '20px' }}>
-      <Slider
-        value={value}
-        onChange={handleChange}
-        min={0}
-        max={sliderItems.length - 1}
-        step={1}
-        aria-labelledby="discrete-slider"
-        valueLabelDisplay="auto"
-        style={{ marginBottom: '20px' }}
-      />
-      <Grid container spacing={3}>
-        {sliderItems.map((item, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
-            <CustomCard>
-              <img src={item.image} alt={item.title} style={{ width: '100%', borderRadius: '8px' }} />
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {item.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {item.description}
-                </Typography>
-              </CardContent>
-            </CustomCard>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+    <Carousel
+      autoPlay={true} // Enable auto play
+      infiniteLoop={true} // Enable infinite loop
+      showThumbs={false} // Hide thumbnail navigation
+      showStatus={false} // Hide status indicator
+      interval={5000} // Set auto play interval to 5 seconds
+      style={{ maxWidth: "300px", margin: "auto" }} // Set maximum width and center the carousel
+    >
+      <div style={slideStyle}>
+        <img src={Egg} alt="Egg" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <div className="legend">
+          <Typography variant="h5" component="h2">
+            Welcome to our website
+          </Typography>
+          <Typography variant="body1">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+            faucibus hendrerit.
+          </Typography>
+          <Button style={addToCartBtnStyle} variant="contained" color="primary">
+            Learn More
+          </Button>
+        </div>
+      </div>
+      <div style={slideStyle}>
+        <img src={fruit} alt="Fruit" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <div className="legend">
+          <Typography variant="h5" component="h2">
+            Discover our products
+          </Typography>
+          <Typography variant="body1">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+            faucibus hendrerit.
+          </Typography>
+          <Button style={addToCartBtnStyle} variant="contained" color="primary">
+            Shop Now
+          </Button>
+        </div>
+      </div>
+      <div style={slideStyle}>
+        <img src={happyHam} alt="Breakfast" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <div className="legend">
+          <Typography variant="h5" component="h2">
+            Join our community
+          </Typography>
+          <Typography variant="body1">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+            faucibus hendrerit.
+          </Typography>
+          <Button style={addToCartBtnStyle} variant="contained" color="primary">
+            Sign Up
+          </Button>
+        </div>
+      </div>
+    </Carousel>
   );
 };
 
-export default SliderTemplate;
+export default HomePageCarousel;

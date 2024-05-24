@@ -25,10 +25,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { SideBarMemoizated } from "./Components/MemoizatedSidebar";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { yellow } from "@mui/material/colors";
+
 import axios from "axios";
 
 const drawerWidth = 270;
-
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
@@ -45,8 +45,12 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
       }),
       marginLeft: 0,
     }),
+    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`, 
+    overflowY: "auto",
   })
 );
+
+
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",

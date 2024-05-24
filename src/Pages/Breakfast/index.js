@@ -78,11 +78,11 @@ const CartMapping = () => {
     padding: "10px 0px",
   }; 
 
-  const addToCart = async (productId, name, description, price, image) => {
+  const addToCart = async (product_id, name, description, price, image) => {
     try {
     
       const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-        product_id: productId,
+        product_id: product_id,
         name: name,
         description: description,
         price: price,

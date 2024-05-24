@@ -23,13 +23,17 @@ const AddToCart = () => {
 
   const handleDelete = async (product_id) => {
     try {
-      await axios.post('http://localhost:10000/api/cart/delete', { product_id });
+      // Send the product_id in the request data
+      await axios.delete('https://mcd-pi.vercel.app/cart/delete', { data: { product_id } });
+      console.log(product_id, "product_id");
       const updatedItems = cartItems.filter(item => item.product_id !== product_id);
+      
       setCartItems(updatedItems);
     } catch (error) {
       console.error('Error deleting item:', error);
     }
   };
+  
 
   const handleAddMore = () => {
    navigate("/breakfast");

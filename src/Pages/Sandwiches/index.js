@@ -11,42 +11,42 @@ import { toast } from 'react-toastify';
 
 const products = [
   {
-    id: 1,
+    id: 21,
     name: 'Bacon Cajun Ranch McCrispy™',
     description: 'Bacon Cajun Ranch McCrispy™',
     price: '$19.99',
     image:mcAlloTikki, 
   },
   {
-    id: 2,
+    id: 22,
     name: 'McChicken® ',
     description: 'McChicken®',
     price: '$29.99',
     image: Chic,
   },
   {
-    id: 3,
+    id: 23,
     name: 'Filet-O-Fish® ',
     description: 'Filet-O-Fish®',
     price: '$39.99',
     image: Filet,
   },
   {
-    id: 4,
+    id: 24,
     name: 'Spicy Deluxe McCrispy™ ',
     description: 'Spicy Deluxe McCrispy',
     price: '$49.99',
     image: spicy,
   },
   {
-    id: 5,
+    id: 25,
     name: 'Spicy McCrispy™',
     description: 'Spicy McCrispy™',
     price: '$59.99',
     image: mccrispy,
   },
   {
-    id: 6,
+    id: 26,
     name: 'Bacon Cajun Ranch Deluxe McCrispy™ ',
     description: 'Bacon Cajun Ranch Deluxe McCrispy™',
     price: '$69.99',

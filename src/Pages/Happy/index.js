@@ -8,21 +8,21 @@ import { toast } from 'react-toastify';
 
 const products = [
   {
-    id: 1,
+    id: 16,
     name: 'Hamburger Happy Meal® ',
     description: 'Hamburger Happy Meal®',
     price: '$19.99',
     image: happyHam, 
   },
   {
-    id: 2,
+    id: 17,
     name: ' 6 Piece Chicken McNuggets® Happy Meal®',
     description: '6 Piece Chicken McNuggets® Happy Meal®',
     price: '$29.99',
     image: happyhug,
   },
   {
-    id: 3,
+    id: 18,
     name: '4 Piece Chicken McNuggets® Happy Meal®uct 3',
     description: '4 Piece Chicken McNuggets® Happy Meal®',
     price: '$39.99',

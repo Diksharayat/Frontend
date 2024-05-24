@@ -14,13 +14,22 @@ import AddToCart from "./Pages/AddToCart/AddToCart";
 import Fries from "./Pages/Fries";
 import CartMapping from "./Pages/Breakfast";
 import Footer from "./Pages/Footer/Footer";
+import SliderTemplate from "./Pages/Home";
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route> 
-        <Route path="/" element={<PersistentDrawerLeft />} />
+        <Route path="/" element={<>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SideBar>
+                <SliderTemplate />
+             
+              </SideBar>
+              </Suspense>
+            </>} />
+
         <Route path="/addtocart" element={<AddToCart />} />
       
         <Route

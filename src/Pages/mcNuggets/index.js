@@ -7,14 +7,14 @@ import axios from 'axios';
 
 const products = [
   {
-    id: 1,
+    id: 19,
     name: 'Chicken McNuggets® ',
     description: 'Chicken McNuggets®',
     price: '$19.99',
     image: nuggets, 
   },
   {
-    id: 2,
+    id: 20,
     name: '10 Piece Chicken McNuggets® ',
     description: '10 Piece Chicken McNuggets®',
     price: '$29.99',

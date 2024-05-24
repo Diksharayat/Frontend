@@ -18,28 +18,28 @@ import { toast } from 'react-toastify';
 
 const products = [
   {
-    id: 1,
+    id: 12,
     name: 'World Famous Fries®',
     description: 'World Famous Fries®',
     price: '$19.99',
     image:mcfries , 
   },
   {
-    id: 2,
+    id: 13,
     name: 'Tangy Barbeque Sauce',
     description: 'Tangy Barbeque Sauce',
     price: '$29.99',
     image:Tangy,
   },
   {
-    id: 3,
+    id: 14,
     name: 'Honey Mustard Sauce',
     description: 'Honey Mustard Sauce',
     price: '$39.99',
     image: mustard,
   },
   {
-    id: 4,
+    id: 15,
     name: 'Mayonnaise Packet',
     description: 'Mayonnaise Packet',
     price: '$49.99',

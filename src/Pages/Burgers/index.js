@@ -11,42 +11,42 @@ import { toast } from 'react-toastify';
 
 const products = [
   {
-    id: 1,
+    id: 6,
     name: 'McAloo Tikki',
     description: 'McAloo Tikki',
     price: '$19.99',
     image: mcAlloTikki, 
   },
   {
-    id: 2,
+    id: 7,
     name: 'McSpicy Paneer Burger',
     description: 'McSpicy Paneer Burger',
     price: '$29.99',
     image: paneer,
   },
   {
-    id: 3,
+    id: 8,
     name: 'Veg Maharaja Mac Burger',
     description: 'Veg Maharaja Mac Burger',
     price: '$39.99',
     image: hug,
   },
   {
-    id: 4,
+    id: 9,
     name: 'Quarter Pounder®* with Cheese Bacon',
     description: 'Quarter Pounder®* with Cheese Bacon',
     price: '$49.99',
     image: Quater,
   },
   {
-    id: 5,
+    id: 10,
     name: 'Cheeseburger',
     description: 'Cheeseburger',
     price: '$59.99',
     image: cheese,
   },
   {
-    id: 6,
+    id: 11,
     name: 'Double Cheese burger',
     description: 'Double Cheese burger',
     price: '$69.99',

@@ -21,8 +21,14 @@ const HomePageCarousel = () => {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "200px", // Adjust the height of the carousel
+    height: "300px", // Adjust the height of the carousel
     backgroundColor: "#fff", // Optional: set background color
+  };
+
+  const imgStyle = {
+    height: "250px", // Adjust the maximum height of the images
+    width: "auto",
+    justifyContent: "center",
   };
 
   return (
@@ -31,11 +37,11 @@ const HomePageCarousel = () => {
       infiniteLoop={true} // Enable infinite loop
       showThumbs={false} // Hide thumbnail navigation
       showStatus={false} // Hide status indicator
-      interval={5000} // Set auto play interval to 5 seconds
-      style={{ maxWidth: "300px", margin: "auto" }} // Set maximum width and center the carousel
+      interval={2000} // Set auto play interval to 5 seconds
+      style={{ maxWidth: "500px", margin: "auto" }} // Set maximum width and center the carousel
     >
       <div style={slideStyle}>
-        <img src={Egg} alt="Egg" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <img src={Egg} alt="Egg" style={imgStyle} />
         <div className="legend">
           <Typography variant="h5" component="h2">
             Welcome to our website
@@ -50,7 +56,7 @@ const HomePageCarousel = () => {
         </div>
       </div>
       <div style={slideStyle}>
-        <img src={fruit} alt="Fruit" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <img src={fruit} alt="Fruit" style={imgStyle} />
         <div className="legend">
           <Typography variant="h5" component="h2">
             Discover our products
@@ -65,7 +71,7 @@ const HomePageCarousel = () => {
         </div>
       </div>
       <div style={slideStyle}>
-        <img src={happyHam} alt="Breakfast" style={{ maxHeight: "150px", width: "auto", justifyContent: "center" }} />
+        <img src={happyHam} alt="Breakfast" style={imgStyle} />
         <div className="legend">
           <Typography variant="h5" component="h2">
             Join our community

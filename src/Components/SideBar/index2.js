@@ -249,7 +249,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px" ,fontSize:"14px",fontWeight:"500"}}
+                            sx={{ color:"black",marginLeft: "30px" ,fontSize:"14px"}}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >

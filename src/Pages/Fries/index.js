@@ -93,7 +93,7 @@ const CustomCard = styled(Card)(({ theme }) => ({
          <CustomCard>
             <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
             <CardContent>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h5" sx={{color:" #26120fbd",fontWeight:"bold"}} gutterBottom>
                 {product.name}
               </Typography>
               <Typography variant="body1" paragraph>

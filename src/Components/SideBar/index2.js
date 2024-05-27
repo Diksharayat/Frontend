@@ -47,6 +47,12 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     }),
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`, 
     overflowY: "auto",
+    overflowX: "hidden",
+    "&::-webkit-scrollbar": {
+      display: "none", 
+    },
+    scrollbarWidth: "none", 
+    msOverflowStyle: "none", 
   })
 );
 
@@ -132,7 +138,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
   return (
     <>
     
-    <Box sx={{ display: "flex", margin: "-12px", padding: "4px" }}>
+    <Box sx={{ display: "flex", padding: "4px" }}>
       <AppBar
         position="fixed"
         open={open}
@@ -187,7 +193,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-            overflow: "hidden",
+           
           },
         }}
         variant="persistent"

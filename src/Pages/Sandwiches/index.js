@@ -1,81 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import mcAlloTikki from "../../assets/Images/mcAlloTikki.jpg"
-import Chic from "../../assets/Images/chic.jpg"
-import Filet from "../../assets/Images/Filet.jpg"
-import spicy from "../../assets/Images/spicy.jpg"
-import mccrispy from "../../assets/Images/mccrispy.jpg"
 import { styled } from '@mui/material/styles';
-import cheese from "../../assets/Images/cheese.jpg"
-import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const products = [
-  {
-    id: 21,
-    name: 'Bacon Cajun Ranch McCrispy™',
-    description: 'Bacon Cajun Ranch McCrispy™',
-    price: '$19.99',
-    image:mcAlloTikki, 
-  },
-  {
-    id: 22,
-    name: 'McChicken® ',
-    description: 'McChicken®',
-    price: '$29.99',
-    image: Chic,
-  },
-  {
-    id: 23,
-    name: 'Filet-O-Fish® ',
-    description: 'Filet-O-Fish®',
-    price: '$39.99',
-    image: Filet,
-  },
-  {
-    id: 24,
-    name: 'Spicy Deluxe McCrispy™ ',
-    description: 'Spicy Deluxe McCrispy',
-    price: '$49.99',
-    image: spicy,
-  },
-  {
-    id: 25,
-    name: 'Spicy McCrispy™',
-    description: 'Spicy McCrispy™',
-    price: '$59.99',
-    image: mccrispy,
-  },
-  {
-    id: 26,
-    name: 'Bacon Cajun Ranch Deluxe McCrispy™ ',
-    description: 'Bacon Cajun Ranch Deluxe McCrispy™',
-    price: '$69.99',
-    image: cheese,
-  },
-];
 
-const addToCart = async (productId, name, description, price, image) => {
+const addToCart = async (product_id, name, description, price, image) => {
   try {
-  
-    const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-      product_id: productId,
-      name: name,
-      description: description,
-      price: price,
-      image: image
-    });
+    const newItem = { product_id, name, description, price, image };
+    const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const updatedCartItems = [...existingCartItems, newItem];
+    localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
     toast.success("Item added to the cart");
-    console.log(response.data); 
+    console.log(updatedCartItems); 
   } catch (error) {
     console.error('Error adding item:', error);
   }
 };
 
+
 const Sandwiches = () => {
+
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/products'); 
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        const filteredProducts = data.filter(product => product.id > 21 && product.id <= 27);
+        setProducts(filteredProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   
  
-// Styled component for the card
+
 const CustomCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',

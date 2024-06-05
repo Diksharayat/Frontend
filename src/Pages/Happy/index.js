@@ -1,38 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import happyHam from "../../assets/Images/happyHam.jpg"
-import happyhug from "../../assets/Images/happyhug.jpg"
-import happymeal2 from "../../assets/Images/happymeal2.jpg"
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const products = [
-  {
-    id: 16,
-    name: 'Hamburger Happy Meal® ',
-    description: 'Hamburger Happy Meal®',
-    price: '$19.99',
-    image: happyHam, 
-  },
-  {
-    id: 17,
-    name: ' 6 Piece Chicken McNuggets® Happy Meal®',
-    description: '6 Piece Chicken McNuggets® Happy Meal®',
-    price: '$29.99',
-    image: happyhug,
-  },
-  {
-    id: 18,
-    name: '4 Piece Chicken McNuggets® Happy Meal®uct 3',
-    description: '4 Piece Chicken McNuggets® Happy Meal®',
-    price: '$39.99',
-    image: happymeal2,
-  },
-]
-
 const HappyMeal = () => {
-  
+  const [products, setProducts] = useState([]);
    
 // Styled component for the card
 const CustomCard = styled(Card)(({ theme }) => ({
@@ -58,23 +30,43 @@ const CustomCard = styled(Card)(({ theme }) => ({
     padding: "10px 10px",
   }; 
 
+  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/products'); 
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        const filteredProducts = data.filter(product => product.id > 16 && product.id <= 19);
+        setProducts(filteredProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
  
-  const addToCart = async (productId, name, description, price, image) => {
+  const addToCart = async (product_id, name, description, price, image) => {
     try {
-    
-      const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-        product_id: productId,
-        name: name,
-        description: description,
-        price: price,
-        image: image
-      });
+      const newItem = { product_id, name, description, price, image };
+      // Retrieve existing cart items from local storage
+      const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      // Add the new item to the existing cart items
+      const updatedCartItems = [...existingCartItems, newItem];
+      // Save the updated cart items to local storage
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       toast.success("Item added to the cart");
-      console.log(response.data); 
+      console.log(updatedCartItems); 
     } catch (error) {
       console.error('Error adding item:', error);
     }
   };
+  
+  
   return (
     <div>
     <Grid container spacing={3}>

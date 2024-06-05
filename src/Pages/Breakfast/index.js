@@ -1,110 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import Egg from "../../assets/Images/Egg.jpg"
-import fruit from "../../assets/Images/fruit.jpg"
 import { styled } from '@mui/material/styles';
-import burrito from "../../assets/Images/burrito.jpg"
-import hotcakes from "../../assets/Images/hotcakes.jpg"
-import EggMeal from "../../assets/Images/EggMeal.jpg"
-import McGriddlesMeal from "../../assets/Images/McGriddlesMeal.jpg"
-import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const products = [
-  {
-    id: 1,
-    name: 'Hotcakes and Sausage',
-    description: 'Bacon, Egg  & Cheese Biscuit',
-    price: '$19.99',
-    image: hotcakes, 
-  },
-  {
-    id: 2,
-    name: 'Egg McMuffin®',
-    description: 'Egg McMuffin®',
-    price: '$29.99',
-    image: Egg,
-  },
-  {
-    id: 3,
-    name: 'Fruit & Maple Oatmeal',
-    description: 'Fruit & Maple Oatmeal',
-    price: '$39.99',
-    image: fruit,
-  },
-  {
-    id: 4,
-    name: 'Sausage Burrito Meal',
-    description: 'Sausage Burrito Meal',
-    price: '$49.99',
-    image: burrito,
-  },
-  {
-    id: 5,
-    name: 'Sausage Biscuit with Egg Meal 5',
-    description: 'Sausage Biscuit with Egg Meal',
-    price: '$59.99',
-    image: EggMeal,
-  },
-  {
-    id: 6,
-    name: 'Sausage McGriddles® Meal',
-    description: 'Sausage McGriddles® Meal',
-    price: '$69.99',
-    image: McGriddlesMeal,
-  },
-];
-
 const CartMapping = () => {
+  const [products, setProducts] = useState([]);
 
- 
-// Styled component for the card
-const CustomCard = styled(Card)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  height: '100%',
-  padding: theme.spacing(2),
-  borderRadius: theme.spacing(2),
-  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-  transition: 'transform 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'scale(1.05)',
-    cursor: 'pointer',
-  },
-}));
+  const CustomCard = styled(Card)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '100%',
+    padding: theme.spacing(2),
+    borderRadius: theme.spacing(2),
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      cursor: 'pointer',
+    },
+  }));
 
   const addToCartBtnStyle = {
     backgroundColor: "#ffd93cf0 ",
     fontWeight: "900",
     color: " #26120fbd",
     padding: "10px 10px",
-  }; 
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/products'); 
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        const filteredProducts = data.filter(product => product.id <= 6);
+        setProducts(filteredProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const addToCart = async (product_id, name, description, price, image) => {
     try {
-    
-      const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-        product_id: product_id,
-        name: name,
-        description: description,
-        price: price,
-        image: image
-      });
+      const newItem = { product_id, name, description, price, image };
+      const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const updatedCartItems = [...existingCartItems, newItem];
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       toast.success("Item added to the cart");
-      console.log(response.data); 
+      console.log(updatedCartItems);
     } catch (error) {
       console.error('Error adding item:', error);
     }
   };
-  
 
   return (
     <Grid container spacing={4}>
       {products.map(product => (
         <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
-         <CustomCard>
+          <CustomCard>
             <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
             <CardContent>
               <Typography variant="h5" sx={{color:" #26120fbd",fontWeight:"bold"}} gutterBottom>
@@ -118,10 +78,9 @@ const CustomCard = styled(Card)(({ theme }) => ({
               </Typography>
             </CardContent>
             <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
-  Add to Cart
-</Button>
-
-</CustomCard>
+              Add to Cart
+            </Button>
+          </CustomCard>
         </Grid>
       ))}
     </Grid>

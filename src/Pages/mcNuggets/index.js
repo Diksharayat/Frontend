@@ -1,49 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import nuggets from "../../assets/Images/nuggets.jpg"
 import nugMeal from "../../assets/Images/nugMeal.jpg"
 import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
-
-const products = [
-  {
-    id: 19,
-    name: 'Chicken McNuggets® ',
-    description: 'Chicken McNuggets®',
-    price: '$19.99',
-    image: nuggets, 
-  },
-  {
-    id: 20,
-    name: '10 Piece Chicken McNuggets® ',
-    description: '10 Piece Chicken McNuggets®',
-    price: '$29.99',
-    image: nugMeal,
-  },
-]
 
 
-const addToCart = async (productId, name, description, price, image) => {
+const addToCart = async (product_id, name, description, price, image) => {
   try {
-  
-    const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-      product_id: productId,
-      name: name,
-      description: description,
-      price: price,
-      image: image
-    });
+    const newItem = { product_id, name, description, price, image };
+    // Retrieve existing cart items from local storage
+    const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    // Add the new item to the existing cart items
+    const updatedCartItems = [...existingCartItems, newItem];
+    // Save the updated cart items to local storage
+    localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
     toast.success("Item added to the cart");
-    console.log(response.data); 
+    console.log(updatedCartItems); 
   } catch (error) {
     console.error('Error adding item:', error);
   }
 };
 
 
+
  
 const McNuggets = () => {
+  const [products, setProducts] = useState([]);
   
  
 // Styled component for the card
@@ -62,6 +45,25 @@ const CustomCard = styled(Card)(({ theme }) => ({
     cursor: 'pointer',
   },
 }));
+
+
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:10000/api/products'); 
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      const filteredProducts = data.filter(product => product.id > 19 && product.id <= 21);
+      setProducts(filteredProducts);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
   const addToCartBtnStyle = {
     backgroundColor: "#ffd93cf0 ",

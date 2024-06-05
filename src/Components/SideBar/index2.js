@@ -89,30 +89,38 @@ export default function PersistentDrawerLeft(props) {
   const [open, setOpen] = useState(true);
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const navigate = useNavigate();
+  const [newItemAdded, setNewItemAdded] = useState(false); // State to track new item added
 
   
 
-  const fetchCartItemsCount = async () => {
-    try {
-      const response = await axios.get('https://mcd-pi.vercel.app/api/cart');
-      const cartItems = response.data.data;
-      const count = cartItems.length; 
-      setCartItemsCount(count);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchCartItemsCount = () => {
+      const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const count = storedCartItems.length; // Get the count of items in local storage
+      setCartItemsCount(count);
+    };
+  
     fetchCartItemsCount(); 
-
-    
+  
+  
     const interval = setInterval(fetchCartItemsCount, 1000);
-
+  
+ 
+    const handleBeforeUnload = () => {
+      clearInterval(interval);
+      localStorage.removeItem('cartItems'); 
+      setCartItemsCount(0); 
+    };
+  
    
-    return () => clearInterval(interval);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []); 
-
+  
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -121,11 +129,11 @@ export default function PersistentDrawerLeft(props) {
   
 
   
-// Define a custom badge style with MCD yellow color
+
 const CustomBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
-    backgroundColor: '#FFD700', // MCD yellow color
-    color: 'black', // Text color of the badge
+    backgroundColor: '#FFD700', 
+    color: 'black', 
   },
 }));
 
@@ -207,8 +215,8 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
       {...props}
       style={{
         ...style,
-        backgroundColor: "rgb(255 217 60 / 94%)", // McDonald's yellow
-        borderRadius: "8px", // Optional: customize scrollbar border radius
+        backgroundColor: "rgb(255 217 60 / 94%)",
+        borderRadius: "8px",
       }}
     />
   )} >

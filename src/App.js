@@ -14,6 +14,10 @@ import Fries from "./Pages/Fries";
 import CartMapping from "./Pages/Breakfast";
 import SliderTemplate from "./Pages/Home";
 import "./App.css";
+import Checkout from "./Pages/Checkout";
+
+
+
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 
 const router = createBrowserRouter(
@@ -30,6 +34,9 @@ const router = createBrowserRouter(
             </>} />
 
         <Route path="/addtocart" element={<AddToCart />} />
+        <Route path="/checkout" element={<Checkout />} />
+       
+    
       
         <Route
           path="/breakfast"

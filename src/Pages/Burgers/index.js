@@ -1,64 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
-import mcAlloTikki from "../../assets/Images/mcAlloTikki.jpg"
-import paneer from "../../assets/Images/paneer.jpg"
-import hug from "../../assets/Images/hug.jpg"
-import Quater from "../../assets/Images/Quater.jpg"
 import { styled } from '@mui/material/styles';
-import cheese from "../../assets/Images/cheese.jpg"
-import Doublecheese from "../../assets/Images/Doublecheese.jpg"
-import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const products = [
-  {
-    id: 6,
-    name: 'McAloo Tikki',
-    description: 'McAloo Tikki',
-    price: '$19.99',
-    image: mcAlloTikki, 
-  },
-  {
-    id: 7,
-    name: 'McSpicy Paneer Burger',
-    description: 'McSpicy Paneer Burger',
-    price: '$29.99',
-    image: paneer,
-  },
-  {
-    id: 8,
-    name: 'Veg Maharaja Mac Burger',
-    description: 'Veg Maharaja Mac Burger',
-    price: '$39.99',
-    image: hug,
-  },
-  {
-    id: 9,
-    name: 'Quarter Pounder®* with Cheese Bacon',
-    description: 'Quarter Pounder®* with Cheese Bacon',
-    price: '$49.99',
-    image: Quater,
-  },
-  {
-    id: 10,
-    name: 'Cheeseburger',
-    description: 'Cheeseburger',
-    price: '$59.99',
-    image: cheese,
-  },
-  {
-    id: 11,
-    name: 'Double Cheese burger',
-    description: 'Double Cheese burger',
-    price: '$69.99',
-    image: Doublecheese,
-  },
-];
+
 
 const Burger = () => {
+  const [products, setProducts] = useState([]);
   
-  
-// Styled component for the card
 const CustomCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -83,23 +32,39 @@ const CustomCard = styled(Card)(({ theme }) => ({
     padding: "10px 10px",
   };
 
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:10000/api/products'); 
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        const filteredProducts = data.filter(product => product.id > 6 && product.id <= 12);
+        setProducts(filteredProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   
-  const addToCart = async (productId, name, description, price, image) => {
+  const addToCart = async (product_id, name, description, price, image) => {
     try {
-    
-      const response = await axios.post('https://mcd-pi.vercel.app/api/add-to-cart', {
-        product_id: productId,
-        name: name,
-        description: description,
-        price: price,
-        image: image
-      });
+      const newItem = { product_id, name, description, price, image };
+      const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const updatedCartItems = [...existingCartItems, newItem];
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       toast.success("Item added to the cart");
-      console.log(response.data); 
+      console.log(updatedCartItems); 
     } catch (error) {
       console.error('Error adding item:', error);
     }
   };
+  
 
   return (
     <div>

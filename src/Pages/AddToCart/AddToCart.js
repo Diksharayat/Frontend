@@ -68,7 +68,7 @@ const AddToCart = () => {
         JSON.parse(localStorage.getItem("cartItems")) || [];
       const updatedCartItems = storedCartItems.map((item) => {
         let price = item.price;
-        // Check if price is a string before applying replace
+      
         if (typeof price === "string") {
           price = parseFloat(price.replace("$", ""));
         }
@@ -103,22 +103,7 @@ const AddToCart = () => {
   };
  
 
-  const handleQuantityChange = (product_id, newQuantity) => {
- 
-    newQuantity = Math.max(newQuantity, 0);
-
-    const updatedCartItems = cartItems.map((item) => {
-      if (item.product_id === product_id) {
-        const price = item.price || 0;
-        const totalPrice = price * newQuantity;
-        return { ...item, quantity: newQuantity, totalPrice };
-      }
-      return item;
-    });
-    setCartItems(updatedCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-  };
-
+  
   const groupedCartItems = cartItems.reduce((acc, currentItem) => {
     const existingItemIndex = acc.findIndex(
       (item) => item.product_id === currentItem.product_id
@@ -138,14 +123,14 @@ const AddToCart = () => {
   }, []);
 
   const handleCheckout = () => {
-    // Calculate total price
+   
     const totalPrice = cartItems.reduce((acc, currentItem) => acc + currentItem.totalPrice, 0);
     setTotalPriceAdd(totalPrice);
     handleOpen();
   };
 
 
-  // Calculate total price
+
   const totalPrice = groupedCartItems.reduce((acc, currentItem) => acc + currentItem.totalPrice, 0);
 
 
@@ -176,16 +161,16 @@ const AddToCart = () => {
     height: "100%",
     width: "800px",
     backgroundColor: "#ffff0021",
-    position: "relative", // Add this line
+    position: "relative", 
   }}
 >
-  {/* Delete icon positioned at top right corner */}
+ 
   <IconButton
     onClick={() => handleDelete(item.product_id)}
     style={{
       position: "absolute",
-      top: "10px", // Adjust top position as needed
-      right: "10px", // Adjust right position as needed
+      top: "10px", 
+      right: "10px", 
     }}
   >
     <Delete
@@ -242,7 +227,7 @@ const AddToCart = () => {
         ))}
       </Grid>
            
-{/* Total display */}
+
 <div style={{ marginTop: "20px", textAlign: "center", marginLeft: "150px"}}>
   <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "#712121" }}>
     Total:  ${totalPrice}
@@ -326,7 +311,7 @@ const AddToCart = () => {
         <Typography variant="h5" component="h2" gutterBottom  style={{ fontStyle:"upper", textAlign: "center", marginBottom: "20px", color: "#712121", fontWeight:"bold" }}>
           Your Order
         </Typography>
-        {/* Group items by product_id */}
+        
         {Object.values(cartItems.reduce((acc, item) => {
           if (!acc[item.product_id]) {
             acc[item.product_id] = { ...item, quantity: 0, totalPrice: 0 };
@@ -349,7 +334,7 @@ const AddToCart = () => {
         </Typography>
         <Divider variant="inset" />
         <Typography variant="h5" sx={{fontWeight:"bold",textAlign: "left",marginTop:"10px",  color: "#712121"}} >User Details</Typography>
-        {/* Fields for name, email, and address */}
+     
         <TextField
           label="Name"
           variant="outlined"

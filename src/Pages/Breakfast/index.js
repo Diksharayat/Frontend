@@ -32,7 +32,7 @@ const CartMapping = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://mcd-pi.vercel.app/'); 
+        const response = await fetch('https://mcd-pi.vercel.app/products'); 
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

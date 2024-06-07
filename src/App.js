@@ -15,6 +15,7 @@ import CartMapping from "./Pages/Breakfast";
 import SliderTemplate from "./Pages/Home";
 import "./App.css";
 import Checkout from "./Pages/Checkout";
+import ThankYouPage from "./Pages/Thankyou/Thankyou";
 
 
 
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
 
         <Route path="/addtocart" element={<AddToCart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/thankyou" element={<ThankYouPage />} />
        
     
       

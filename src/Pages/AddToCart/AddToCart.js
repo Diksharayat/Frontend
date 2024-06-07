@@ -35,22 +35,6 @@ const ModalContent = styled(Box)(({ theme }) => ({
 }));
 
 
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  borderRadius:"10%",
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-
-
 const AddToCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
@@ -165,6 +149,7 @@ const AddToCart = () => {
         localStorage.removeItem('cartItems');
         handleClose(); 
         toast.success("Order Placed Successfully");
+        navigate("/thankyou");
       } else {
        
         alert('Failed to place order. Please try again later.');
@@ -332,7 +317,6 @@ const AddToCart = () => {
     color: "black",
     fontWeight: "bold",
     borderRadius: "30px",
-    display: "flex",
     display: "block", margin: "auto",
     marginTop:"30px",
     

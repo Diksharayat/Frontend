@@ -149,7 +149,7 @@ const AddToCart = () => {
         localStorage.removeItem('cartItems');
         handleClose(); 
         toast.success("Order Placed Successfully");
-        navigate("/thankyou");
+      
       } else {
        
         alert('Failed to place order. Please try again later.');

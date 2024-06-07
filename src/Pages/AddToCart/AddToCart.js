@@ -131,6 +131,13 @@ const AddToCart = () => {
   };
 
   const handlePlaceOrder = () => {
+
+     // Check if name, email, and address are empty
+  if (!name || !email || !address) {
+    // Show toast message if any of the required fields are empty
+    toast.error('Please fill all the required fields.');
+    return; // Exit the function
+  }
     const orderData = {
       name,
       email,

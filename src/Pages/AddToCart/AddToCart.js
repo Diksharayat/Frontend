@@ -17,6 +17,7 @@ import Modal from '@mui/material/Modal';
 import shoping from "../../assets/Images/shoping.jpg";
 import { styled } from '@mui/material/styles';
 import { Scrollbars } from 'react-custom-scrollbars-2';
+import { toast } from 'react-toastify';
 
 const CustomModal = styled(Modal)(({ theme }) => ({
   display: 'flex',
@@ -127,6 +128,45 @@ const AddToCart = () => {
     const totalPrice = cartItems.reduce((acc, currentItem) => acc + currentItem.totalPrice, 0);
     setTotalPriceAdd(totalPrice);
     handleOpen();
+  };
+
+  const handlePlaceOrder = () => {
+    const orderData = {
+      name,
+      email,
+      address,
+      items: cartItems.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      total: totalPrice
+    };
+  
+   
+    fetch('https://mcd-pi.vercel.app/api/placeOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    })
+    .then(response => {
+      if (response.ok) {
+      
+        setCartItems([]);
+        localStorage.removeItem('cartItems');
+        handleClose(); 
+        toast.success("Order Placed Successfully");
+      } else {
+       
+        alert('Failed to place order. Please try again later.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while processing your request.');
+    });
   };
 
 
@@ -361,7 +401,7 @@ const AddToCart = () => {
         />
         <Button
           variant="contained"
-          onClick={handleCheckout}
+          onClick={handlePlaceOrder}
           style={{
             marginTop: "20px",
             backgroundColor: "#FFC72C",

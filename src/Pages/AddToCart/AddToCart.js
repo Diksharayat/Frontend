@@ -10,7 +10,7 @@ import {
   TextField,
   Divider,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Add, Delete, Remove } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -46,11 +46,9 @@ const AddToCart = () => {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
 
-
   useEffect(() => {
     const fetchCartItems = () => {
-      const storedCartItems =
-        JSON.parse(localStorage.getItem("cartItems")) || [];
+      const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
       const updatedCartItems = storedCartItems.map((item) => {
         let price = item.price;
       
@@ -61,19 +59,12 @@ const AddToCart = () => {
       });
       setCartItems(updatedCartItems);
     };
-
+  
     fetchCartItems();
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
+  
+    // No need for beforeunload event listener or its cleanup function
   }, []);
-
-  const handleBeforeUnload = () => {
-    localStorage.removeItem("cartItems");
-  };
+  
 
   const handleDelete = (product_id) => {
     const updatedItems = cartItems.filter(
@@ -161,6 +152,25 @@ const AddToCart = () => {
     });
   };
 
+  const handleQuantityChange = (productId, action) => {
+    const updatedItems = cartItems.map(item => {
+      if (item.product_id === productId) {
+        let newQuantity = item.quantity;
+        if (action === 'decrement' && newQuantity > 1) {
+          newQuantity--;
+        } else if (action === 'increment') {
+          newQuantity++;
+        }
+        return { ...item, quantity: newQuantity, totalPrice: newQuantity * item.price };
+      }
+      return item;
+    });
+  
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+  };
+  
+
 
 
   const totalPrice = groupedCartItems.reduce((acc, currentItem) => acc + currentItem.totalPrice, 0);
@@ -213,46 +223,72 @@ const AddToCart = () => {
       }}
     />
   </IconButton>
-
   <CardContent style={{ display: "flex", alignItems: "center" }}>
-    <img
-      src={item.image}
-      alt={item.name}
+  <img
+    src={item.image}
+    alt={item.name}
+    style={{
+      width: "130px",
+      maxHeight: "60px",
+      objectFit: "cover",
+      marginRight: "20px",
+    }}
+  />
+  <div style={{ flexGrow: 1 }}>
+    <Typography variant="h6">{item.name}</Typography>
+    <Typography
+      variant="body2"
+      sx={{ color: "brown", fontWeight: "bold" }}
+    >
+      {item.description}
+    </Typography>
+    <div
       style={{
-        width: "130px",
-        maxHeight: "60px",
-        objectFit: "cover",
-        marginRight: "20px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
       }}
-    />
-    <div style={{ flexGrow: 1 }}>
-      <Typography variant="h6">{item.name}</Typography>
-      <Typography
-        variant="body2"
-        sx={{ color: "brown", fontWeight: "bold" }}
-      >
-        {item.description}
-      </Typography>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",marginTop:"5px" }}>
         <div>
-          <Typography variant="body1">
-            Quantity: {item.quantity}
-          </Typography>
+       
+          <IconButton onClick={() => handleQuantityChange(item.product_id, 'decrement')}>
+  <Remove sx={{color:"red"}} />
+</IconButton>
+
+
         </div>
+        <div style={{ 
+  textAlign: "center", 
+  // border: "2px solid brown", 
+  borderRadius: "14px", 
+  padding: "4px 12px",
+  backgroundColor: "white", 
+  color: "brown",
+  fontWeight: "bold",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+}}>
+  {/* Display quantity within a box */}
+  {item.quantity}
+</div>
+
         <div>
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            Price: ${item.totalPrice}
-          </Typography>
+      
+          <IconButton onClick={() => handleQuantityChange(item.product_id, 'increment')}>
+  <Add sx={{color:"green"}}  />
+</IconButton>
         </div>
       </div>
+      <div style={{ textAlign: "center" }}>
+        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+          Price: ${item.totalPrice}
+        </Typography>
+      </div>
     </div>
-  </CardContent>
+  </div>
+</CardContent>
+
+
 </Card>
 
           </Grid>

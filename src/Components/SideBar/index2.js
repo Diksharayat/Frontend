@@ -91,8 +91,6 @@ export default function PersistentDrawerLeft(props) {
   const navigate = useNavigate();
   const [newItemAdded, setNewItemAdded] = useState(false); // State to track new item added
 
-  
-
   useEffect(() => {
     const fetchCartItemsCount = () => {
       const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -102,24 +100,15 @@ export default function PersistentDrawerLeft(props) {
   
     fetchCartItemsCount(); 
   
-  
     const interval = setInterval(fetchCartItemsCount, 1000);
   
- 
-    const handleBeforeUnload = () => {
-      clearInterval(interval);
-      localStorage.removeItem('cartItems'); 
-      setCartItemsCount(0); 
-    };
-  
-   
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    // No need to remove items from local storage or reset cart items count on unload
   
     return () => {
       clearInterval(interval);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []); 
+  }, []);
+  
   
 
   const handleDrawerOpen = () => {

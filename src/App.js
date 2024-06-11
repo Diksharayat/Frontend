@@ -25,6 +25,7 @@ const router = createBrowserRouter(
     <>
       <Route> 
         <Route path="/" element={<>
+        
             <Suspense fallback={<div>Loading...</div>}>
               <SideBar>
                 <SliderTemplate />

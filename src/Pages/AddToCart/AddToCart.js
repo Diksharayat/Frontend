@@ -404,7 +404,7 @@ const AddToCart = () => {
         }, {})).map((groupedItem, index) => (
           <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography sx={{color:"black", fontWeight: "bold", fontSize: "16px"}} variant="body1" gutterBottom>
-              <span style={{ marginRight: "5px",color:"black" }}>{groupedItem.quantity}x</span> {groupedItem.name}
+              <span style={{ marginRight: "5px",color:"black" }}>{groupedItem.quantity} x </span> {groupedItem.name}
             </Typography>
             <Typography sx={{color:"black", fontSize: "14px"}} variant="body1" gutterBottom>
               ${groupedItem.totalPrice.toFixed(2)}

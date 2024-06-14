@@ -61,8 +61,6 @@ const AddToCart = () => {
     };
   
     fetchCartItems();
-  
-    // No need for beforeunload event listener or its cleanup function
   }, []);
   
 
@@ -107,11 +105,10 @@ const AddToCart = () => {
 
   const handlePlaceOrder = () => {
 
-     // Check if name, email, and address are empty
+
   if (!name || !email || !address) {
-    // Show toast message if any of the required fields are empty
     toast.error('Please fill all the required fields.');
-    return; // Exit the function
+    return;
   }
     const orderData = {
       name,
@@ -156,12 +153,16 @@ const AddToCart = () => {
     const updatedItems = cartItems.map(item => {
       if (item.product_id === productId) {
         let newQuantity = item.quantity;
+        let newPrice = item.price; // Initialize new price with the original price
         if (action === 'decrement' && newQuantity > 1) {
           newQuantity--;
+          newPrice = (item.price / (item.quantity + 1)) * newQuantity; // Calculate the new price when decrementing
         } else if (action === 'increment') {
           newQuantity++;
+          newPrice = (item.price / (item.quantity - 1)) * newQuantity; // Calculate the new price when incrementing
         }
-        return { ...item, quantity: newQuantity, totalPrice: newQuantity * item.price };
+        const totalPrice = newQuantity * newPrice; // Calculate the total price based on the new quantity and price
+        return { ...item, quantity: newQuantity, price: newPrice, totalPrice };
       }
       return item;
     });
@@ -169,6 +170,10 @@ const AddToCart = () => {
     setCartItems(updatedItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
   };
+  
+  
+  
+  
   
 
 
@@ -258,19 +263,29 @@ const AddToCart = () => {
 
 
         </div>
-        <div style={{ 
-  textAlign: "center", 
-  // border: "2px solid brown", 
-  borderRadius: "14px", 
-  padding: "4px 12px",
-  backgroundColor: "white", 
-  color: "brown",
-  fontWeight: "bold",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
-}}>
-  {/* Display quantity within a box */}
+        <div
+  style={{
+    textAlign: "center",
+    borderRadius: "14px",
+    padding: "4px 12px",
+    backgroundColor: "white",
+    color: "brown",
+    fontWeight: "bold",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    cursor: "pointer" // Add cursor pointer to indicate it's clickable
+  }}
+  onClick={() => {
+    // Toggle between incrementing and decrementing based on current quantity
+    if (item.quantity > 1) {
+      handleQuantityChange(item.product_id, 'decrement'); // Decrement if quantity is greater than 1
+    } else {
+      handleQuantityChange(item.product_id, 'increment'); // Increment otherwise
+    }
+  }}
+>
   {item.quantity}
 </div>
+
 
         <div>
       

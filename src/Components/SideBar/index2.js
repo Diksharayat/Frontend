@@ -26,7 +26,6 @@ import { SideBarMemoizated } from "./Components/MemoizatedSidebar";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { yellow } from "@mui/material/colors";
 
-import axios from "axios";
 
 const drawerWidth = 270;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -89,12 +88,12 @@ export default function PersistentDrawerLeft(props) {
   const [open, setOpen] = useState(true);
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const navigate = useNavigate();
-  const [newItemAdded, setNewItemAdded] = useState(false); // State to track new item added
+  const [newItemAdded, setNewItemAdded] = useState(false); 
 
   useEffect(() => {
     const fetchCartItemsCount = () => {
       const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      const count = storedCartItems.length; // Get the count of items in local storage
+      const count = storedCartItems.length;
       setCartItemsCount(count);
     };
   
@@ -102,7 +101,6 @@ export default function PersistentDrawerLeft(props) {
   
     const interval = setInterval(fetchCartItemsCount, 1000);
   
-    // No need to remove items from local storage or reset cart items count on unload
   
     return () => {
       clearInterval(interval);

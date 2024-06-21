@@ -89,23 +89,24 @@ export default function PersistentDrawerLeft(props) {
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const navigate = useNavigate();
   const [newItemAdded, setNewItemAdded] = useState(false); 
+  
 
   useEffect(() => {
     const fetchCartItemsCount = () => {
       const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      const count = storedCartItems.length;
+      const count = storedCartItems.reduce((total, item) => total + item.quantity, 0);
       setCartItemsCount(count);
     };
   
-    fetchCartItemsCount(); 
+    fetchCartItemsCount();
   
     const interval = setInterval(fetchCartItemsCount, 1000);
-  
   
     return () => {
       clearInterval(interval);
     };
   }, []);
+  
   
   
 

@@ -3,15 +3,14 @@ import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 
-
 const addToCart = async (product_id, name, description, price, image) => {
   try {
-    const newItem = { product_id, name, description, price, image };
+    const newItem = { product_id, name, description, price, image, quantity: 1 }; // Add quantity: 1 here
     const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     const updatedCartItems = [...existingCartItems, newItem];
     localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
     toast.success("Item added to the cart");
-    console.log(updatedCartItems); 
+    console.log(updatedCartItems);
   } catch (error) {
     console.error('Error adding item:', error);
   }

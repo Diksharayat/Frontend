@@ -49,7 +49,7 @@ const CartMapping = () => {
 
   const addToCart = async (product_id, name, description, price, image) => {
     try {
-      const newItem = { product_id, name, description, price, image };
+      const newItem = { product_id, name, description, price, image, quantity: 1 };
       const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
       const updatedCartItems = [...existingCartItems, newItem];
       localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
@@ -59,6 +59,8 @@ const CartMapping = () => {
       console.error('Error adding item:', error);
     }
   };
+  
+  
 
   return (
     <Grid container spacing={4}>
@@ -77,7 +79,7 @@ const CartMapping = () => {
                 Price: {product.price}
               </Typography>
             </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image)}>
+            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image, product.quantity)}>
               Add to Cart
             </Button>
           </CustomCard>

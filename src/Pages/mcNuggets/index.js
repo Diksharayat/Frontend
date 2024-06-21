@@ -5,18 +5,14 @@ import nugMeal from "../../assets/Images/nugMeal.jpg"
 import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 
-
 const addToCart = async (product_id, name, description, price, image) => {
   try {
-    const newItem = { product_id, name, description, price, image };
-    // Retrieve existing cart items from local storage
+    const newItem = { product_id, name, description, price, image, quantity: 1 }; // Add quantity: 1 here
     const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    // Add the new item to the existing cart items
     const updatedCartItems = [...existingCartItems, newItem];
-    // Save the updated cart items to local storage
     localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
     toast.success("Item added to the cart");
-    console.log(updatedCartItems); 
+    console.log(updatedCartItems);
   } catch (error) {
     console.error('Error adding item:', error);
   }

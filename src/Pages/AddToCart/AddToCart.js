@@ -9,15 +9,20 @@ import {
   Container,
   TextField,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import shoping from "../../assets/Images/shoping.jpg";
 import { styled } from '@mui/material/styles';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
+import shoping from "../../assets/Images/shoping.jpg";
+
+const NAME_REGEX = /^[A-Z][a-z]*$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ADDRESS_REGEX = /^[a-zA-Z0-9\s,.-]+$/;
 
 const CustomModal = styled(Modal)(({ theme }) => ({
   display: 'flex',
@@ -40,34 +45,24 @@ const AddToCart = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [totalPriceAdd, setTotalPriceAdd] = useState(0);
-  
+  const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false); 
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState(false);
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
+  const [addressError, setAddressError] = useState(false);
 
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-  
-    // Remove duplicates based on product_id
     const uniqueItems = removeDuplicates(storedCartItems);
-  
-    // Calculate totalPrice for each item
-    const itemsWithTotalPrice = uniqueItems.map(item => ({
-      ...item,
-      totalPrice: item.price * item.quantity // Calculate totalPrice for each item
-    }));
-  
-    setCartItems(itemsWithTotalPrice);
-  
-    const totalPrice = itemsWithTotalPrice.reduce((total, item) => {
-      return total + item.totalPrice;
+    setCartItems(uniqueItems);
+    const totalPrice = uniqueItems.reduce((total, item) => {
+      return total + (item.price * item.quantity);
     }, 0);
-    
-    setTotalPriceAdd(totalPrice || 0); // Initialize to 0 if totalPrice is null or undefined
-    
+    setTotalPriceAdd(totalPrice || 0); 
   }, []);
 
-  // Function to remove duplicates based on product_id
   const removeDuplicates = (items) => {
     const uniqueItems = items.reduce((acc, current) => {
       const existingItemIndex = acc.findIndex(item => item.product_id === current.product_id);
@@ -79,33 +74,40 @@ const AddToCart = () => {
       }
       return acc;
     }, []);
-
     return uniqueItems;
   };
 
-  // Function to handle deleting an item from cart
+  const handleNameChange = (e) => {
+    const inputName = e.target.value;
+    if (inputName === '' || NAME_REGEX.test(inputName)) {
+      setName(inputName);
+      setNameError(false);
+    } else {
+      setNameError(true);
+    }
+  };
+
   const handleDelete = (product_id) => {
     const updatedItems = cartItems.filter(item => item.product_id !== product_id);
     setCartItems(updatedItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
   };
 
-  // Function to navigate to add more items
   const handleAddMore = () => {
     navigate("/breakfast");
   };
 
-  // Function to handle checkout and open modal
   const handleCheckout = () => {
     handleOpen();
   };
 
-  // Function to handle placing order
   const handlePlaceOrder = () => {
     if (!name || !email || !address) {
       toast.error('Please fill all the required fields.');
       return;
     }
+
+    setLoading(true);
 
     const orderData = {
       name,
@@ -114,8 +116,7 @@ const AddToCart = () => {
       items: cartItems.map(item => ({
         name: item.name,
         quantity: item.quantity,
-        price: item.price,
-        totalPrice: item.totalPrice // Include totalPrice in order data
+        price: item.price
       })),
       total: totalPriceAdd
     };
@@ -140,24 +141,22 @@ const AddToCart = () => {
     .catch(error => {
       console.error('Error:', error);
       alert('An error occurred while processing your request.');
+    })
+    .finally(() => {
+      setLoading(false); 
     });
   };
 
-
-  // Function to handle quantity change (increment/decrement)
   const handleQuantityChange = (productId, action) => {
     const updatedItems = cartItems.map(item => {
       if (item.product_id === productId) {
         let newQuantity = item.quantity;
-
         if (action === 'decrement' && newQuantity > 1) {
           newQuantity--;
         } else if (action === 'increment') {
           newQuantity++;
         }
-
         const newTotalPrice = item.price * newQuantity;
-
         return { ...item, quantity: newQuantity, totalPrice: newTotalPrice };
       }
       return item;
@@ -166,7 +165,6 @@ const AddToCart = () => {
     setCartItems(updatedItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 
-    // Update the total price for all items in the cart
     const newTotalPrice = updatedItems.reduce((total, item) => {
       return total + item.totalPrice;
     }, 0);
@@ -174,7 +172,6 @@ const AddToCart = () => {
     setTotalPriceAdd(newTotalPrice);
   };
 
-  // Function to navigate back to shopping page
   const handleReturnToShop = () => {
     navigate("/breakfast");
   };
@@ -186,44 +183,47 @@ const AddToCart = () => {
       </h2>
       {cartItems.length > 0 ? (
         <>
-
           <Grid container spacing={3} justifyContent="center" direction="column">
             {cartItems.map((item, index) => (
-              <Grid item key={index} xs={6} sm={6} md={6} lg={6}>
-                <Card style={{ height: "100%", width: "800px", backgroundColor: "#ffff0021", position: "relative" }}>
-                  <IconButton onClick={() => handleDelete(item.product_id)} style={{ position: "absolute", top: "10px", right: "10px" }}>
-                    <Delete sx={{ color: "#DA291C", height: "0.8em", width: "0.8em" }} />
-                  </IconButton>
-                  <CardContent style={{ display: "flex", alignItems: "center" }}>
-                    <img src={item.image} alt={item.name} style={{ width: "130px", maxHeight: "60px", objectFit: "cover", marginRight: "20px" }} />
-                    <div style={{ flexGrow: 1 }}>
-                      <Typography variant="h6">{item.name}</Typography>
-                      <Typography variant="body2" sx={{ color: "brown", fontWeight: "bold" }}>{item.description}</Typography>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "5px" }}>
-                          <IconButton onClick={() => handleQuantityChange(item.product_id, 'decrement')}>
-                            <Remove sx={{ color: "red" }} />
-                          </IconButton>
-                          <div style={{ textAlign: "center", borderRadius: "14px", padding: "4px 12px", backgroundColor: "white", color: "brown", fontWeight: "bold", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", cursor: "pointer" }}>
-                            {item.quantity}
-                          </div>
-                          <IconButton onClick={() => handleQuantityChange(item.product_id, 'increment')}>
-                            <Add sx={{ color: "green" }} />
-                          </IconButton>
-                        </div>
-                        <div style={{ textAlign: "center" }}>
-                          <Typography variant="body1" sx={{ fontWeight: "bold" }}>Price: {item.price}</Typography>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Grid>
+           <Grid item xs={12} sm={6} md={4} lg={3}> 
+           <Card style={{ height: "100%", backgroundColor: "#ffff0021", position: "relative", width: "100%" }}>
+             <IconButton onClick={() => handleDelete(item.product_id)} style={{ position: "absolute", top: "10px", right: "10px" }}>
+               <Delete sx={{ color: "#DA291C", height: "0.8em", width: "0.8em" }} />
+             </IconButton>
+             <CardContent style={{ display: "flex", alignItems: "center" }}>
+               <img src={item.image} alt={item.name} style={{ width: "130px", maxHeight: "60px", objectFit: "cover", marginRight: "20px" }} />
+               <div style={{ flexGrow: 1 }}>
+                 <Typography variant="h6">{item.name}</Typography>
+                 <Typography variant="body2" sx={{ color: "brown", fontWeight: "bold" }}>{item.description}</Typography>
+                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "5px" }}>
+                   <div style={{ display: "flex", alignItems: "center" }}>
+                     <IconButton onClick={() => handleQuantityChange(item.product_id, 'decrement')}>
+                       <Remove sx={{ color: "red" }} />
+                     </IconButton>
+                     <div style={{ textAlign: "center", borderRadius: "14px", padding: "4px 12px", backgroundColor: "white", color: "brown", fontWeight: "bold", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", cursor: "pointer" }}>
+                       {item.quantity}
+                     </div>
+                     <IconButton onClick={() => handleQuantityChange(item.product_id, 'increment')}>
+                       <Add sx={{ color: "green" }} />
+                     </IconButton>
+                   </div>
+                   <div style={{ textAlign: "center" }}>
+                     {item.quantity === 1 ? (
+                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>Price: ${item.price.toFixed(2)}</Typography>
+                     ) : (
+                       <Typography variant="body1" sx={{ fontWeight: "bold" }}> Price: ${item.totalPrice.toFixed(2)}</Typography>
+                     )}
+                   </div>
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
+         </Grid>
             ))}
           </Grid>
 
-          <div style={{ marginTop: "20px", textAlign: "center", marginLeft: "150px" }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "#712121" }}>Total: ${totalPriceAdd}</Typography>
+          <div style={{ marginTop: "20px", textAlign: "center", marginLeft: "1150px" }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "#712121" }}>Total: ${totalPriceAdd.toFixed(2)}</Typography>
           </div>
 
           <Button
@@ -253,6 +253,96 @@ const AddToCart = () => {
           >
             Checkout
           </Button>
+
+        
+          <CustomModal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div>
+              <Scrollbars style={{ width: 600, height: 500, color: "#FFD700" }} renderThumbVertical={({ style, ...props }) => (
+                <div {...props} style={{ ...style, backgroundColor: "rgb(255 217 60 / 94%)", borderRadius: "8px" }} />
+              )}>
+                <ModalContent>
+                  <Typography variant="h5" component="h2" gutterBottom style={{ fontStyle: "upper", textAlign: "center", marginBottom: "20px", color: "#712121", fontWeight: "bold" }}>
+                    Your Order
+                  </Typography>
+
+                  {cartItems.map((item, index) => (
+                    <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <Typography sx={{ color: "black", fontWeight: "bold", fontSize: "16px" }} variant="body1" gutterBottom>
+                        <span style={{ marginRight: "5px", color: "black" }}>{item.quantity} x </span> {item.name}
+                      </Typography>
+                      <Typography sx={{ color: "black", fontSize: "14px" }} variant="body1" gutterBottom>
+                        ${item.totalPrice.toFixed(2)}
+                      </Typography>
+                    </div>
+                  ))}
+                  <Typography variant="body1" gutterBottom style={{ textAlign: "right", marginTop: "20px", color: "#712121", fontWeight: "bold" }}>
+                    Total: ${totalPriceAdd.toFixed(2)}
+                  </Typography>
+                  <Divider variant="inset" />
+                  <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "left", marginTop: "10px", color: "#712121" }} >User Details</Typography>
+
+                  <TextField
+                    label="Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={name}
+                    onChange={handleNameChange}
+                    error={nameError}
+                    helperText={nameError ? 'Please enter a valid name (for ex: John)' : ''}
+                  />
+                  <TextField
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailError(!EMAIL_REGEX.test(e.target.value));
+                    }}
+                    error={emailError}
+                    helperText={emailError ? 'Please enter a valid email address' : ''}
+                    value={email}
+                  />
+                  <TextField
+                    label="Address"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={address}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                      setAddressError(!ADDRESS_REGEX.test(e.target.value));
+                    }}
+                    error={addressError}
+                    helperText={addressError ? 'Please enter a valid address' : ''}
+                  />
+                  {loading ? (
+                    <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }} />
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={handlePlaceOrder}
+                      style={{
+                        marginTop: "20px",
+                        backgroundColor: "#FFC72C",
+                        color: "black",
+                        fontWeight: "bold",
+                        borderRadius: "30px",
+                      }}
+                    >
+                      Place Order
+                    </Button>
+                  )}
+                </ModalContent>
+              </Scrollbars>
+            </div>
+          </CustomModal>
         </>
       ) : (
         <>
@@ -266,7 +356,6 @@ const AddToCart = () => {
           <Typography variant="body2" gutterBottom sx={{ textAlign: "center", color: "grey" }}>
             You will find a lot of interesting products on our website.
           </Typography>
-
           <Button
             variant="contained"
             style={{
@@ -284,79 +373,6 @@ const AddToCart = () => {
           </Button>
         </>
       )}
-
-      <CustomModal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <div>
-          <Scrollbars style={{ width: 600, height: 500, color: "#FFD700" }} renderThumbVertical={({ style, ...props }) => (
-            <div {...props} style={{ ...style, backgroundColor: "rgb(255 217 60 / 94%)", borderRadius: "8px" }} />
-          )}>
-            <ModalContent>
-              <Typography variant="h5" component="h2" gutterBottom style={{ fontStyle: "upper", textAlign: "center", marginBottom: "20px", color: "#712121", fontWeight: "bold" }}>
-                Your Order
-              </Typography>
-
-              {cartItems.map((item, index) => (
-                <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Typography sx={{ color: "black", fontWeight: "bold", fontSize: "16px" }} variant="body1" gutterBottom>
-                    <span style={{ marginRight: "5px", color: "black" }}>{item.quantity} x </span> {item.name}
-                  </Typography>
-                  <Typography sx={{ color: "black", fontSize: "14px" }} variant="body1" gutterBottom>
-                    ${item.totalPrice}
-                  </Typography>
-                </div>
-              ))}
-              <Typography variant="body1" gutterBottom style={{ textAlign: "right", marginTop: "20px", color: "#712121", fontWeight: "bold" }}>
-                Total: ${totalPriceAdd}
-              </Typography>
-              <Divider variant="inset" />
-              <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "left", marginTop: "10px", color: "#712121" }} >User Details</Typography>
-
-              <TextField
-                label="Name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
-              <TextField
-                label="Address"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                onChange={(e) => setAddress(e.target.value)}
-                value={address}
-              />
-              <Button
-                variant="contained"
-                onClick={handlePlaceOrder}
-                style={{
-                  marginTop: "20px",
-                  backgroundColor: "#FFC72C",
-                  color: "black",
-                  fontWeight: "bold",
-                  borderRadius: "30px",
-                }}
-              >
-                Place Order
-              </Button>
-            </ModalContent>
-          </Scrollbars>
-        </div>
-      </CustomModal>
     </Container>
   );
 };

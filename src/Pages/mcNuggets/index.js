@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
-import nuggets from "../../assets/Images/nuggets.jpg"
-import nugMeal from "../../assets/Images/nugMeal.jpg"
 import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 

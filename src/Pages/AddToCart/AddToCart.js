@@ -208,11 +208,9 @@ const AddToCart = () => {
                      </IconButton>
                    </div>
                    <div style={{ textAlign: "center" }}>
-                     {item.quantity === 1 ? (
-                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>Price: ${item.price.toFixed(2)}</Typography>
-                     ) : (
-                       <Typography variant="body1" sx={{ fontWeight: "bold" }}> Price: ${item.totalPrice.toFixed(2)}</Typography>
-                     )}
+                   <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+  Price: ${item.quantity === 1 ? (item.price ? item.price.toFixed(2) : '0.00') : (item.totalPrice ? item.totalPrice.toFixed(2) : '0.00')}
+</Typography>
                    </div>
                  </div>
                </div>

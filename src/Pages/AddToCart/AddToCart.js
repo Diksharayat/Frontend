@@ -134,6 +134,7 @@ const AddToCart = () => {
         localStorage.removeItem('cartItems');
         handleClose();
         toast.success("Order Placed Successfully");
+        navigate('/thankyou'); //
       } else {
         alert('Failed to place order. Please try again later.');
       }
@@ -177,7 +178,8 @@ const AddToCart = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Grid >
+    <Container maxWidth="xl"  >
       <h2 style={{ textAlign: "center", marginBottom: "20px", color: "#712121" }}>
         SHOPPING CART
       </h2>
@@ -349,6 +351,7 @@ const AddToCart = () => {
         </>
       ) : (
         <>
+        <Grid>
           <img style={{ display: "block", margin: "auto" }} src={shoping} alt="No items in the cart" />
           <Typography variant="h6" gutterBottom sx={{ textAlign: "center", marginTop: "40px", fontWeight: "bolder" }}>
             Your Cart is Currently Empty!
@@ -374,9 +377,12 @@ const AddToCart = () => {
           >
             Return to shop
           </Button>
+          </Grid>
         </>
+        
       )}
     </Container>
+    </Grid>
   );
 };
 

@@ -13,18 +13,19 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import logo from "../../assets/Images/logo.png";
-import fish from "../../assets/Images/fish.jpg";
-import meals from "../../assets/Images/meals.jpg";
-import burgers from "../../assets/Images/burgers.jpg";
-import frr from "../../assets/Images/frr.jpg";
-import happy from "../../assets/Images/happy.jpg";
-import breakfast from "../../assets/Images/breakfast.jpg";
+import fish from "../../assets/Images/fish.png";
+import meals from "../../assets/Images/meals.png";
+import burgers from "../../assets/Images/burgers.png";
+import frr from "../../assets/Images/frr.png";
+import happy from "../../assets/Images/happy.png";
+import breakfast from "../../assets/Images/breakfast.png";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { Badge, Grid, LinearProgress } from "@mui/material";
+import { Avatar, Badge, Button, Grid, LinearProgress, MenuItem } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import { SideBarMemoizated } from "./Components/MemoizatedSidebar";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { yellow } from "@mui/material/colors";
+import Menu from "@mui/material/Menu";
 
 
 const drawerWidth = 270;
@@ -44,16 +45,18 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
       }),
       marginLeft: 0,
     }),
-    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`, 
+    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: "auto",
     overflowX: "hidden",
     "&::-webkit-scrollbar": {
-      display: "none", 
+      display: "none",
     },
-    scrollbarWidth: "none", 
-    msOverflowStyle: "none", 
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    backgroundColor: theme.palette.background.default, 
   })
 );
+
 
 
 
@@ -87,9 +90,12 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function PersistentDrawerLeft(props) {
   const [open, setOpen] = useState(true);
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const [newItemAdded, setNewItemAdded] = useState(false); 
-  
+  const token = localStorage.getItem("token");
+  const userEmail = localStorage.getItem("email"); // Assuming userEmail is stored in localStorage
+
+
 
   useEffect(() => {
     const fetchCartItemsCount = () => {
@@ -97,50 +103,89 @@ export default function PersistentDrawerLeft(props) {
       const count = storedCartItems.reduce((total, item) => total + item.quantity, 0);
       setCartItemsCount(count);
     };
-  
+
     fetchCartItemsCount();
-  
+
     const interval = setInterval(fetchCartItemsCount, 1000);
-  
+
     return () => {
       clearInterval(interval);
     };
   }, []);
-  
-  
-  
+
+
+
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
-  
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
+  };
+
+
+
+
+
+  const CustomBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      backgroundColor: '#FFD700',
+      color: 'black',
+    },
+  }));
+
+  const addToCartBtnStyle = {
+ 
+    fontWeight: "bold",
+    color: "rgb(255, 249, 196)",
+    padding: "10px 10px",
+    marginLeft: "190px",
+  };
+
+
+  const [anchorEl, setAnchorEl] = useState(null);
 
   
-
-const CustomBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    backgroundColor: '#FFD700', 
-    color: 'black', 
-  },
-}));
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (action) => {
+    if (action === "Logout") {
+      // Clear localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("email"); // Remove email if stored
+
+      // Redirect to login page or homepage
+    navigate("/breakfast"); // Example redirect to login page
+    } else if (action === "Profile") {
+      // Handle profile click
+      // Example: history.push("/profile");
+    }
+   
+   
+    handleClose(); 
+  };
+
+
+  const firstLetter = userEmail ? userEmail.charAt(0).toUpperCase() : "";
 
   const navigateToCart = () => {
     navigate('/addtocart');
   };
 
+
+
   return (
-    <>
-    
     <Box sx={{ display: "flex", padding: "4px" }}>
-      <AppBar
-        position="fixed"
-        open={open}
-        
-        sx={{ backgroundColor: "white", boxShadow: 0 }}
-      >
+   <AppBar position="fixed" open={open} sx={{ backgroundColor: "#5b0707", boxShadow: 0 }}>
         <Toolbar>
           <IconButton
             color="black"
@@ -149,12 +194,12 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
-            <MenuIcon sx={{color:"#26120fbd"}}/>
+            <MenuIcon sx={{ color: "rgb(255, 249, 196)" }} />
           </IconButton>
           {!open && (
             <img style={{ height: "30px" }} src={logo} alt="LogoWithTagLine" />
           )}
-          <Grid container justifyContent={"flex-start"} alignContent="center">
+          <Grid container justifyContent="flex-start" alignContent="center">
             <IconButton
               color="black"
               aria-label="open drawer"
@@ -165,19 +210,56 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                 ...(open === false && { display: "none" }),
               }}
             >
-              <MenuIcon sx={{color:"#26120fbd"}} />
+              <MenuIcon sx={{ color: "rgb(255, 249, 196)" }} />
             </IconButton>
           </Grid>
-
-          <Grid sx={{ backgroundColor: "white", color: "black" }}>
-            <IconButton onClick={navigateToCart} >
-             
-              <CustomBadge badgeContent={cartItemsCount} color="primary">
-    <ShoppingCartIcon sx={{color:"#DA291C"}}/>
-  </CustomBadge>
+          <Grid container justifyContent="flex-start" alignItems="center" >
+            {token ? (
+              <>
+              <Grid ml={70} >
+                <Avatar
+                  onClick={handleAvatarClick}
+                  sx={{ bgcolor: "rgb(255, 249, 196)", color:"#4b1603", cursor: 'pointer' }}
+                >
+                  {firstLetter}
+                </Avatar>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={() => handleMenuItemClick("Profile")}>Profile</MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick("Profile")}>Orders</MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick("Logout")}>Logout</MenuItem>
+                </Menu>
+                </Grid>
+              </>
+            ) : (
+              <>
+              <Grid container spacing={2} alignItems="center" >
+      <Grid item>
+        <Button color="inherit" style={addToCartBtnStyle} onClick={() => { navigate("/userlog") }} ml={70}>
+          Login
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button color="inherit" style={ { fontWeight: "bold",
+    color: "rgb(255, 249, 196)",
+    padding: "10px 10px",
+    }} onClick={() => { navigate("/userreg") }}>
+          Register
+        </Button>
+      </Grid>
+    </Grid>
+              </>
+            )}
+          </Grid>
+          <Grid>
+            <IconButton onClick={navigateToCart}>
+              <Badge badgeContent={cartItemsCount} color="primary">
+                <ShoppingCartIcon sx={{ color: "rgb(255, 249, 196)" }} />
+              </Badge>
             </IconButton>
-
-            
           </Grid>
         </Toolbar>
       </AppBar>
@@ -185,30 +267,31 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
         sx={{
           m: 0,
           width: drawerWidth,
+          // backgroundColor:"#DDBB99",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-           
+
           },
         }}
         variant="persistent"
-        
+
         anchor="left"
         open={open}
       >
-        
-        <Scrollbars style={{ height: "100%", color: "#FFD700"}} renderThumbVertical={({ style, ...props }) => (
-    <div
-      {...props}
-      style={{
-        ...style,
-        backgroundColor: "rgb(255 217 60 / 94%)",
-        borderRadius: "8px",
-      }}
-    />
-  )} >
-          <DrawerHeader>
+
+        <Scrollbars style={{ height: "100%", color: "#FFD700" }} renderThumbVertical={({ style, ...props }) => (
+          <div
+            {...props}
+            style={{
+              ...style,
+              backgroundColor: "rgb(255 217 60 / 94%)",
+              borderRadius: "8px",
+            }}
+          />
+        )} >
+          <DrawerHeader style={{backgroundColor:"#5b0707"}}>
             <IconButton>
               <img
                 style={{ height: "30px" }}
@@ -218,9 +301,9 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <List component="nav" aria-labelledby="nested-list-subheader">
+          <List component="nav" aria-labelledby="nested-list-subheader" style={{backgroundColor:"#5b0707"}}>
             <>
-            <NavLink
+              <NavLink
                 to="/breakfast"
                 style={{ textDecoration: "none" }}
                 className={({ isActive }) =>
@@ -245,11 +328,11 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color:"black",marginLeft: "30px" ,fontSize:"14px"}}
+                            sx={{ color:"rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px" ,fontWeight:"bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
-                            <SideBarMemoizated title={"Breakfast"} />
+                            <SideBarMemoizated title={"BREAKFAST"} />
                           </Typography>
                         }
                       />
@@ -283,11 +366,11 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px" ,fontSize:"14px",fontWeight:"500"}}
+                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
-                            <SideBarMemoizated title={"Burgers"} />
+                            <SideBarMemoizated title={"BURGERS"} />
                           </Typography>
                         }
                       />
@@ -320,12 +403,12 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px",fontSize:"14px",fontWeight:"500" }}
+                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
                             <SideBarMemoizated
-                              title={"Chicken & Fish Sandwiches"}
+                              title={"CHICKEN & FISH SANDWICHES"}
                             />
                           </Typography>
                         }
@@ -360,11 +443,11 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px",fontSize:"14px",fontWeight:"500" }}
+                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
-                            <SideBarMemoizated title={"McNuggets® and Meals"} />
+                            <SideBarMemoizated title={"McNUGGETS® & MEALS"} />
                           </Typography>
                         }
                       />
@@ -398,11 +481,11 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px" ,fontSize:"14px",fontWeight:"500"}}
+                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
-                            <SideBarMemoizated title={"Fries & Sides"} />
+                            <SideBarMemoizated title={"FRIES & SIDES"} />
                           </Typography>
                         }
                       />
@@ -426,7 +509,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                           alt="happy"
                           width={150}
                           height={100}
-                          style={{ borderRadius: "100px", marginRight: "10px"}}
+                          style={{ borderRadius: "100px", marginRight: "10px" }}
                           title="Breakfast"
                         />
                       </ListItemIcon>
@@ -435,11 +518,11 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ color: "black", marginLeft: "30px" ,fontSize:"14px",fontWeight:"500" }}
+                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
                             variant="subtitle1"
                             fontWeight="semiBold"
                           >
-                            <SideBarMemoizated title={"Happy Meal®"} />
+                            <SideBarMemoizated title={"HAPPY MEAL®"} />
                           </Typography>
                         }
                       />
@@ -457,7 +540,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
         style={{
           padding: "10px 40px 40px 40px",
           minHeight: "100vh",
-          backgroundColor: yellow,
+          backgroundColor: yellow[100], // Use yellow[100] from MUI theme for background color
         }}
       >
         <DrawerHeader />
@@ -467,9 +550,7 @@ const CustomBadge = styled(Badge)(({ theme }) => ({
           </Box>
         </Suspense>
       </Main>
-     
+
     </Box>
-   
-   </>
   );
 }

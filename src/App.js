@@ -15,6 +15,10 @@ import CartMapping from "./Pages/Breakfast";
 import SliderTemplate from "./Pages/Home";
 import "./App.css";
 import Checkout from "./Pages/Checkout";
+import Thankyou from "./Pages/Thankyou/Thankyou";
+import UserLog from "./Pages/User/UserLog";
+import UserReg from "./Pages/User/UserReg";
+
 
 
 
@@ -36,6 +40,10 @@ const router = createBrowserRouter(
 
         <Route path="/addtocart" element={<AddToCart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/thankyou" element={<Thankyou/>} />
+        <Route path="/userlog" element={<UserLog/>} />
+        <Route path="/userreg" element={<UserReg/>} />
+        
        
     
       

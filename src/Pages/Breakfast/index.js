@@ -76,45 +76,47 @@ const CartMapping = () => {
   if (loading) {
    
     return (
-      <Grid container spacing={4}>
-        {[1, 2, 3,4,5,6].map((placeholderId) => ( 
-          <Grid item xs={12} sm={6} md={4} lg={4} key={placeholderId}>
-            <CustomCard style={{ width: '100%',height:"800px", maxHeight: '200px', objectFit: 'cover' }}>
-              <CardContent>
-                <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }}/>
-              </CardContent>
-            </CustomCard>
-          </Grid>
-        ))}
-      </Grid>
+      <Grid container spacing={2}>
+      {[1, 2, 3, 4, 5, 6].map((placeholderId) => (
+        <Grid item xs={12} sm={6} md={4} lg={4} key={placeholderId} style={{ marginBottom: '20px', marginTop: '20px',marginLeft:"20px" }}>
+          {/* Adjust padding for left and right spacing */}
+          <CustomCard style={{ width: '100%', height: "800px", maxHeight: '200px', objectFit: 'cover' }}>
+            <CardContent>
+              <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }} />
+            </CardContent>
+          </CustomCard>
+        </Grid>
+      ))}
+    </Grid>
     );
   }
 
  
   return (
     <Grid container spacing={2}>
-      {products.map(product => (
-        <Grid item xs={12} sm={6} md={4} lg={4} key={product.id}>
-          <CustomCard>
-            <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
-            <CardContent>
-              <Typography variant="h5" sx={{ color: "#26120fbd", fontWeight: "bold" }} gutterBottom>
-                {product.name}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {product.description}
-              </Typography>
-              <Typography variant="body1">
-                Price: {product.price}
-              </Typography>
-            </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image, product.quantity)}>
-              Add to Cart
-            </Button>
-          </CustomCard>
-        </Grid>
-      ))}
-    </Grid>
+    {products.map(product => (
+      <Grid item xs={12} sm={6} md={4} lg={4} key={product.id} style={{ marginBottom: '20px', marginTop: '20px' }}>
+        <CustomCard>
+          <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+          <CardContent>
+            <Typography variant="h5" sx={{ color: "#26120fbd", fontWeight: "bold" }} gutterBottom>
+              {product.name}
+            </Typography>
+            <Typography variant="body1" paragraph>
+              {product.description}
+            </Typography>
+            <Typography variant="body1">
+              Price: {product.price}
+            </Typography>
+          </CardContent>
+          <Button variant="contained" style={addToCartBtnStyle} onClick={() => addToCart(product.id, product.name, product.description, product.price, product.image, product.quantity)}>
+            Add to Cart
+          </Button>
+        </CustomCard>
+      </Grid>
+    ))}
+  </Grid>
+  
   );
 };
 

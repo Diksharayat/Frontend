@@ -1,0 +1,12 @@
+/* carousel.css */
+
+/* Override arrow color */
+.react-responsive-carousel .carousel .control-arrow {
+  color: #26120fbd; /* Change arrow color */
+}
+
+/* Adjust arrow size and positioning */
+.react-responsive-carousel .carousel .control-arrow:before {
+  font-size: 24px; /* Arrow size */
+  top: 50%; /* Adjust vertical position */
+}

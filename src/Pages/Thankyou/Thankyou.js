@@ -1,37 +1,74 @@
-import React from 'react';
-import { Button, Container, Typography, makeStyles } from '@mui/material';
+import React from 'react'
+import confeti_square from "../../assets/confeti_square.gif";
+import Check from "../../assets/Images/check.svg";
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(4),
-    textAlign: 'center',
-  },
-  button: {
-    marginTop: theme.spacing(2),
-  },
-}));
+const Thankyou = () => {
 
-const ThankYouPage = () => {
-  const classes = useStyles();
+  const navigate= useNavigate();
 
+  const addToCartBtnStyle = {
+    backgroundColor: "#ffd93cf0",
+    fontWeight: "900",
+    color: "#26120fbd",
+    padding: "10px 10px",
+  };
   return (
-    <Container className={classes.root}>
-      <Typography variant="h4" gutterBottom>
-        Thank You for Placing Your Order!
-      </Typography>
-      <Typography variant="body1">
-        Your order has been successfully placed. We will send you an email confirmation shortly.
-      </Typography>
-      <Button 
-        variant="contained" 
-        color="primary" 
-        className={classes.button}
-        href="/"
+    <div>
+        <div
+      style={{
+        fontFamily: "Roboto, sans-serif",
+        textAlign: "center",
+        fontSize: "18px",
+        lineHeight: "24px",
+        margin: "0 auto",
+        marginTop:"40px",
+        maxWidth: "480px",
+      }}
+    >
+      <div
+        style={{position: "relative", display: "inline-block", marginBottom: "32px"}}
       >
-        Continue Shopping
-      </Button>
-    </Container>
-  );
-};
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            backgroundImage:`url(${Check})`,
+            backgroundSize: "cover",
+            width: "152px",
+            height: "152px",
+          }}
+        ></div>
+        <div
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            backgroundImage:`url(${confeti_square})`,
+            backgroundSize:" 97% 97%",
+            width: "152px",
+            height: "152px",
+          }}
+        ></div>
+      </div>
 
-export default ThankYouPage;
+      <p><strong>Fantastic! Your order has been placed Successfully. Have a happy meal! 😊</strong></p>
+
+
+      <p>
+        Our team is now hard at work to get you appointed with top rated digital
+        carriers.
+      </p>
+
+      <p>You'll hear from us soon.</p>
+      <Button variant="contained" style={addToCartBtnStyle} onClick={()=>{navigate("/")}}>
+             Back To Home
+            </Button>
+    </div>
+    
+    </div>
+  )
+}
+
+export default Thankyou

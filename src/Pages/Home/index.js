@@ -1,11 +1,11 @@
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the styles for the carousel
+import "./Home.css"; // Import your custom CSS for carousel styles
 import { Typography, Button } from "@mui/material";
-import Egg from "../../assets/Images/Egg.jpg";
-import fruit from "../../assets/Images/fruit.jpg";
-import happyHam from "../../assets/Images/happyHam.jpg";
-
+import Egg from "../../assets/Images/Egg-removebg-preview.png";
+import fruit from "../../assets/Images/fruit-removebg-preview.png";
+import happyHam from "../../assets/Images/happyHam-removebg-preview.png";
 
 const HomePageCarousel = () => {
   const addToCartBtnStyle = {
@@ -21,71 +21,73 @@ const HomePageCarousel = () => {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "300px", // Adjust the height of the carousel
-    backgroundColor: "#fff", // Optional: set background color
+    height: "400px", // Adjust the height of the carousel
+    backgroundColor: "rgb(244 223 148 / 78%)", // Optional: set background color
   };
 
   const imgStyle = {
-    height: "250px", // Adjust the maximum height of the images
+    height: "300px", // Adjust the maximum height of the images
     width: "auto",
     justifyContent: "center",
   };
 
   return (
-    <Carousel
-      autoPlay={true} // Enable auto play
-      infiniteLoop={true} // Enable infinite loop
-      showThumbs={false} // Hide thumbnail navigation
-      showStatus={false} // Hide status indicator
-      interval={2000} // Set auto play interval to 5 seconds
-      style={{ maxWidth: "500px", margin: "auto" }} // Set maximum width and center the carousel
-    >
-      <div style={slideStyle}>
-        <img src={Egg} alt="Egg" style={imgStyle} />
-        <div className="legend">
-          <Typography variant="h5" component="h2">
-            Welcome to our website
-          </Typography>
-          <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
-            faucibus hendrerit.
-          </Typography>
-          <Button style={addToCartBtnStyle} variant="contained" color="primary">
-            Learn More
-          </Button>
+    <div style={{ width: "100%", maxWidth: "100vw", overflow: "hidden", backgroundColor: "yellow" }}>
+      <Carousel
+        autoPlay={true}
+        infiniteLoop={true}
+        showThumbs={false}
+        showStatus={false}
+        interval={2000}
+        style={{ width: "100%", maxWidth: "100%", backgroundColor: "yellow" }}
+      >
+        <div style={slideStyle}>
+          <img src={Egg} alt="Egg" style={imgStyle} />
+          <div className="legend" style={{ backgroundColor: "#26120fbd" }}>
+            <Typography variant="h5" component="h2">
+              Welcome to our website
+            </Typography>
+            <Typography variant="body1">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+              faucibus hendrerit.
+            </Typography>
+            <Button style={addToCartBtnStyle} variant="contained" color="primary">
+              Learn More
+            </Button>
+          </div>
         </div>
-      </div>
-      <div style={slideStyle}>
-        <img src={fruit} alt="Fruit" style={imgStyle} />
-        <div className="legend">
-          <Typography variant="h5" component="h2">
-            Discover our products
-          </Typography>
-          <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
-            faucibus hendrerit.
-          </Typography>
-          <Button style={addToCartBtnStyle} variant="contained" color="primary">
-            Shop Now
-          </Button>
+        <div style={slideStyle}>
+          <img src={fruit} alt="Fruit" style={imgStyle} />
+          <div className="legend" style={{ backgroundColor: "#26120fbd" }}>
+            <Typography variant="h5" component="h2">
+              Discover our products
+            </Typography>
+            <Typography variant="body1">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+              faucibus hendrerit.
+            </Typography>
+            <Button style={addToCartBtnStyle} variant="contained" color="primary">
+              Shop Now
+            </Button>
+          </div>
         </div>
-      </div>
-      <div style={slideStyle}>
-        <img src={happyHam} alt="Breakfast" style={imgStyle} />
-        <div className="legend">
-          <Typography variant="h5" component="h2">
-            Join our community
-          </Typography>
-          <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
-            faucibus hendrerit.
-          </Typography>
-          <Button style={addToCartBtnStyle} variant="contained" color="primary">
-            Sign Up
-          </Button>
+        <div style={slideStyle}>
+          <img src={happyHam} alt="Breakfast" style={imgStyle} />
+          <div className="legend" style={{ backgroundColor: "#26120fbd" }}>
+            <Typography variant="h5" component="h2">
+              Join our community
+            </Typography>
+            <Typography variant="body1">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id ante sed felis
+              faucibus hendrerit.
+            </Typography>
+            <Button style={addToCartBtnStyle} variant="contained" color="primary">
+              Sign Up
+            </Button>
+          </div>
         </div>
-      </div>
-    </Carousel>
+      </Carousel>
+    </div>
   );
 };
 

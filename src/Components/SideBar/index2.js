@@ -228,9 +228,13 @@ export default function PersistentDrawerLeft(props) {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={() => handleMenuItemClick("Profile")}>Profile</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick("Profile")}>Orders</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick("Logout")}>Logout</MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick("Profile")}>
+        Hello Diksha<br/>
+        7087241763
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={() => handleMenuItemClick("Orders")}>Orders</MenuItem>
+      <MenuItem onClick={() => handleMenuItemClick("Logout")}>Logout</MenuItem>
                 </Menu>
                 </Grid>
               </>
@@ -243,7 +247,7 @@ export default function PersistentDrawerLeft(props) {
     </Button>
   </Grid>
   <Grid item>
-    <Button color="inherit" style={{ fontWeight: "bold", color: "rgb(255, 249, 196)", padding: "10px 10px", marginLeft: '10px' }} onClick={() => { navigate("/userreg") }}>
+    <Button color="inherit" style={{ fontWeight: "bold", color: "rgb(255, 249, 196)", padding: "10px 10px", marginLeft: '0px' }} onClick={() => { navigate("/userreg") }}>
       Register
     </Button>
   </Grid>

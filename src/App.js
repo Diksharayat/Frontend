@@ -18,6 +18,7 @@ import Checkout from "./Pages/Checkout";
 import Thankyou from "./Pages/Thankyou/Thankyou";
 import UserLog from "./Pages/User/UserLog";
 import UserReg from "./Pages/User/UserReg";
+import UserProfile from "./Pages/User/profile";
 
 
 
@@ -41,7 +42,8 @@ const router = createBrowserRouter(
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/thankyou" element={<Thankyou/>} />
         <Route path="/userlog" element={<UserLog/>} />
-        <Route path="/userreg" element={<UserReg/>} />
+        <Route path="/userlog" element={<UserLog/>} />
+        {/* <Route path="/userprofile" element={<UserProfile/>} /> */}
         
        
     

@@ -236,21 +236,19 @@ export default function PersistentDrawerLeft(props) {
               </>
             ) : (
               <>
-              <Grid container spacing={2} alignItems="center" >
-      <Grid item>
-        <Button color="inherit" style={addToCartBtnStyle} onClick={() => { navigate("/userlog") }} ml={70}>
-          Login
-        </Button>
-      </Grid>
-      <Grid item>
-        <Button color="inherit" style={ { fontWeight: "bold",
-    color: "rgb(255, 249, 196)",
-    padding: "10px 10px",
-    }} onClick={() => { navigate("/userreg") }}>
-          Register
-        </Button>
-      </Grid>
-    </Grid>
+             <Grid container spacing={2} alignItems="center">
+  <Grid item>
+    <Button color="inherit" style={{ ...addToCartBtnStyle, marginLeft: '280px' }} onClick={() => { navigate("/userlog") }}>
+      Login
+    </Button>
+  </Grid>
+  <Grid item>
+    <Button color="inherit" style={{ fontWeight: "bold", color: "rgb(255, 249, 196)", padding: "10px 10px", marginLeft: '10px' }} onClick={() => { navigate("/userreg") }}>
+      Register
+    </Button>
+  </Grid>
+</Grid>
+
               </>
             )}
           </Grid>

@@ -5,21 +5,25 @@ import { styled } from '@mui/material/styles';
 
 const addToCart = async (product_id, name, description, price, image) => {
   try {
-    // Remove any formatting symbols from the price (assuming it's a string with '$' prefix)
-    const cleanedPrice = parseFloat(price.replace('$', ''));
+    // Check if email exists in local storage
+    const userEmail = localStorage.getItem('email');
+    if (!userEmail) {
+      // If email does not exist, show an error or handle it accordingly
+      toast.error("Please log in to add items to the cart");
+      return;
+    }
 
-    const newItem = { product_id, name, description, price: cleanedPrice, image, quantity: 1, totalPrice: cleanedPrice }; // Initialize totalPrice with price
+    // Proceed to add item to cart if email exists
+    const cleanedPrice = parseFloat(price.replace('$', ''));
+    const newItem = { product_id, name, description, price: cleanedPrice, image, quantity: 1, totalPrice: cleanedPrice };
     let existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
-    // Check if the item already exists in the cart
     const existingItemIndex = existingCartItems.findIndex(item => item.product_id === product_id);
 
     if (existingItemIndex !== -1) {
-      // Item already exists, update quantity and totalPrice
       existingCartItems[existingItemIndex].quantity++;
       existingCartItems[existingItemIndex].totalPrice = existingCartItems[existingItemIndex].quantity * existingCartItems[existingItemIndex].price;
     } else {
-      // Item does not exist, add it to cart
       existingCartItems.push(newItem);
     }
 
@@ -30,6 +34,7 @@ const addToCart = async (product_id, name, description, price, image) => {
     console.error('Error adding item:', error);
   }
 };
+
 
 
 
@@ -90,7 +95,7 @@ useEffect(() => {
       <Grid container spacing={4}>
         {[1, 2].map((placeholderId) => ( 
           <Grid item xs={12} sm={6} md={4} lg={4} key={placeholderId}>
-            <CustomCard style={{ width: '100%',height:"800px", maxHeight: '200px', objectFit: 'cover' }}>
+            <CustomCard style={{ width: '90%',height:"800px", maxHeight: '200px', objectFit: 'cover' }}>
               <CardContent>
                 <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }}/>
               </CardContent>

@@ -20,6 +20,7 @@ function UserLog() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  console.log(process.env.REACT_APP_TEST_VARIABLE, "VARIABLE TEST")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,11 +40,10 @@ function UserLog() {
   
       const data = await response.json();
       
-      // Store token and email in localStorage
       localStorage.setItem("token", data.token);
       localStorage.setItem("email", email);
   
-      // Redirect to another page after successful login
+     
       toast.success("Login Successful");
       navigate("/breakfast");
     } catch (error) {
@@ -158,7 +158,7 @@ function UserLog() {
               </CardContent>
             </form>
 
-            {/* Divider and Register Button */}
+        
             <Divider />
             <Grid>
               <CardContent margin="auto">

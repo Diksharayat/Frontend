@@ -21,7 +21,6 @@ import UserReg from "./Pages/User/UserReg";
 
 
 
-
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 
 const router = createBrowserRouter(

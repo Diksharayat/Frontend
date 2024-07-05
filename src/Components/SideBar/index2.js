@@ -114,6 +114,16 @@ export default function PersistentDrawerLeft(props) {
   }, []);
 
 
+useEffect(() => {
+  // Check if userEmail is present in localStorage
+  const userEmail = localStorage.getItem("email");
+  if (!userEmail) {
+    // If userEmail is not present, clear cart items
+    localStorage.removeItem("cartItems");
+    setCartItemsCount(0); // Reset cart items count in state
+  }
+}, [userEmail]); //
+
 
 
   const handleDrawerOpen = () => {

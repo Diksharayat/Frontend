@@ -60,6 +60,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 
 
 
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -135,8 +136,15 @@ useEffect(() => {
     setIsModalOpen(true);
   };
 
+  // Function to get uname and contact from localStorage
+  const getUnameAndContact = () => {
+    const uname = localStorage.getItem("uname");
+    const contact = localStorage.getItem("contact");
+    return { uname, contact };
+  };
 
-
+   // Destructure uname and contact from localStorage
+   const { uname, contact } = getUnameAndContact();
 
 
   const CustomBadge = styled(Badge)(({ theme }) => ({
@@ -239,9 +247,11 @@ useEffect(() => {
                   onClose={handleClose}
                 >
                   <MenuItem onClick={() => handleMenuItemClick("Profile")}>
-        Hello Diksha<br/>
-        7087241763
-      </MenuItem>
+                  Hello {uname}<br/>
+                  {contact}
+                  </MenuItem>
+
+     
       <Divider />
       <MenuItem onClick={() => handleMenuItemClick("Orders")}>Orders</MenuItem>
       <MenuItem onClick={() => handleMenuItemClick("Logout")}>Logout</MenuItem>

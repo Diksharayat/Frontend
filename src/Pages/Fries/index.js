@@ -48,7 +48,8 @@ const Fries = () => {
 useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const response = await fetch('https://mcd-pi.vercel.app/api/products'); 
+      console.log(process.env.REACT_APP_BACKEND_URL);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`); 
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }

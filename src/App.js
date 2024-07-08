@@ -18,7 +18,6 @@ import Checkout from "./Pages/Checkout";
 import Thankyou from "./Pages/Thankyou/Thankyou";
 import UserLog from "./Pages/User/UserLog";
 import UserReg from "./Pages/User/UserReg";
-import UserProfile from "./Pages/User/profile";
 
 
 

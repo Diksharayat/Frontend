@@ -26,7 +26,7 @@ function UserLog() {
     e.preventDefault();
   
     try {
-      const response = await fetch("https://mcd-pi.vercel.app/api/login", {
+      const response = await fetch("http://localhost:10000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,15 +42,17 @@ function UserLog() {
       
       localStorage.setItem("token", data.token);
       localStorage.setItem("email", email);
+      localStorage.setItem("contact", data.contact); // Assuming 'contact' is returned from server
+      localStorage.setItem("uname", data.uname);     // Assuming 'uname' is returned from server
   
-     
       toast.success("Login Successful");
       navigate("/breakfast");
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please check your credentials and try again.");
     }
-  };
+};
+
   
 
   const togglePasswordVisibility = () => {

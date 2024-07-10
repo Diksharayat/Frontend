@@ -26,6 +26,7 @@ import { SideBarMemoizated } from "./Components/MemoizatedSidebar";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { yellow } from "@mui/material/colors";
 import Menu from "@mui/material/Menu";
+import Profile from '../../Pages/User/profile'; 
 
 
 const drawerWidth = 270;
@@ -94,7 +95,8 @@ export default function PersistentDrawerLeft(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const userEmail = localStorage.getItem("email"); // Assuming userEmail is stored in localStorage
+  const userEmail = localStorage.getItem("email"); 
+  const [showProfile, setShowProfile] = useState(false);
 
 
 
@@ -116,12 +118,12 @@ export default function PersistentDrawerLeft(props) {
 
 
 useEffect(() => {
-  // Check if userEmail is present in localStorage
+ 
   const userEmail = localStorage.getItem("email");
   if (!userEmail) {
-    // If userEmail is not present, clear cart items
+  
     localStorage.removeItem("cartItems");
-    setCartItemsCount(0); // Reset cart items count in state
+    setCartItemsCount(0); 
   }
 }, [userEmail]); //
 
@@ -136,14 +138,14 @@ useEffect(() => {
     setIsModalOpen(true);
   };
 
-  // Function to get uname and contact from localStorage
+  
   const getUnameAndContact = () => {
     const uname = localStorage.getItem("uname");
     const contact = localStorage.getItem("contact");
     return { uname, contact };
   };
 
-   // Destructure uname and contact from localStorage
+  
    const { uname, contact } = getUnameAndContact();
 
 
@@ -176,16 +178,18 @@ useEffect(() => {
   };
 
   const handleMenuItemClick = (action) => {
-    if (action === "Logout") {
-      // Clear localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("email"); // Remove email if stored
 
-      // Redirect to login page or homepage
-    navigate("/breakfast"); // Example redirect to login page
+    if (action === "Logout") {
+     
+      localStorage.removeItem("token");
+      localStorage.removeItem("email"); 
+
+      
+    navigate("/breakfast"); 
     } else if (action === "Profile") {
-      // Handle profile click
-      // Example: history.push("/profile");
+      navigate("/profile");
+    }else if(action==="ContactUs"){
+      navigate("/contact");
     }
    
    
@@ -251,9 +255,14 @@ useEffect(() => {
                   {contact}
                   </MenuItem>
 
+      {showProfile && (
+        <Profile uname={uname} contact={contact} />
+      )}
+
      
       <Divider />
       <MenuItem onClick={() => handleMenuItemClick("Orders")}>Orders</MenuItem>
+      <MenuItem onClick={() => handleMenuItemClick("ContactUs")}>ContactUs</MenuItem>
       <MenuItem onClick={() => handleMenuItemClick("Logout")}>Logout</MenuItem>
                 </Menu>
                 </Grid>

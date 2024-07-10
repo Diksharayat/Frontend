@@ -52,14 +52,9 @@ const Thankyou = () => {
           }}
         ></div>
       </div>
-
+      <p><strong>Congratulations!</strong></p>
       <p><strong>Fantastic! Your order has been placed Successfully. Have a happy meal! 😊</strong></p>
 
-
-      <p>
-        Our team is now hard at work to get you appointed with top rated digital
-        carriers.
-      </p>
 
       <p>You'll hear from us soon.</p>
       <Button variant="contained" style={addToCartBtnStyle} onClick={()=>{navigate("/")}}>

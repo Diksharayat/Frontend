@@ -18,6 +18,8 @@ import Checkout from "./Pages/Checkout";
 import Thankyou from "./Pages/Thankyou/Thankyou";
 import UserLog from "./Pages/User/UserLog";
 import UserReg from "./Pages/User/UserReg";
+import UserProfileForm from "./Pages/User/profile";
+import ContactForm from "./Pages/ContactUs";
 
 
 
@@ -120,6 +122,32 @@ const router = createBrowserRouter(
             <PersistentDrawerLeft>
                 <Happy />
                 </PersistentDrawerLeft>
+              </Suspense>
+            </>
+          }
+        ></Route>
+         <Route
+          path="/profile"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SideBar>
+               
+                <UserProfileForm/>
+              </SideBar>
+              </Suspense>
+            </>
+          }
+        ></Route>
+           <Route
+          path="/contact"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SideBar>
+               
+               <ContactForm/>
+              </SideBar>
               </Suspense>
             </>
           }

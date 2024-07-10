@@ -47,7 +47,7 @@ const AddToCart = () => {
   const [totalPriceAdd, setTotalPriceAdd] = useState(0);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState(false); 
-  const [name, setName] = useState('');
+  const [uname, setName] = useState('');
   const [nameError, setNameError] = useState(false);
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -61,6 +61,9 @@ const AddToCart = () => {
       return total + (item.price * item.quantity);
     }, 0);
     setTotalPriceAdd(totalPrice || 0); 
+    
+    // Fetch user details
+    fetchUserDetails();
   }, []);
 
   const removeDuplicates = (items) => {
@@ -75,6 +78,30 @@ const AddToCart = () => {
       return acc;
     }, []);
     return uniqueItems;
+  };
+
+  const fetchUserDetails = async () => {
+    try {
+      // Retrieve user ID from local storage
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID not found in local storage');
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const userData = await response.json();
+      console.log('User Data:', userData);
+      setName(userData.uname);  // Assuming firstName, lastName, email, and address are returned from the API
+      setEmail(userData.email);
+      setAddress(userData.address);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error('Failed to fetch user data');
+    }
   };
 
   const handleNameChange = (e) => {
@@ -102,7 +129,7 @@ const AddToCart = () => {
   };
 
   const handlePlaceOrder = () => {
-    if (!name || !email || !address) {
+    if (!uname || !email || !address) {
       toast.error('Please fill all the required fields.');
       return;
     }
@@ -110,7 +137,7 @@ const AddToCart = () => {
     setLoading(true);
 
     const orderData = {
-      name,
+      uname,
       email,
       address,
       items: cartItems.map(item => ({
@@ -260,94 +287,95 @@ const AddToCart = () => {
           </Button>
 
         
-          <CustomModal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+        
+<CustomModal
+  open={open}
+  onClose={handleClose}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <div>
+    <Scrollbars style={{ width: 600, height: 500, color: "#FFD700" }} renderThumbVertical={({ style, ...props }) => (
+      <div {...props} style={{ ...style, backgroundColor: "rgb(255 217 60 / 94%)", borderRadius: "8px" }} />
+    )}>
+      <ModalContent>
+        <Typography variant="h5" component="h2" gutterBottom style={{ fontStyle: "upper", textAlign: "center", marginBottom: "20px", color: "#712121", fontWeight: "bold" }}>
+          Your Order
+        </Typography>
+
+        {cartItems.map((item, index) => (
+          <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography sx={{ color: "black", fontWeight: "bold", fontSize: "16px" }} variant="body1" gutterBottom>
+              <span style={{ marginRight: "5px", color: "black" }}>{item.quantity} x </span> {item.name}
+            </Typography>
+            <Typography sx={{ color: "black", fontSize: "14px" }} variant="body1" gutterBottom>
+              ${item.totalPrice.toFixed(2)}
+            </Typography>
+          </div>
+        ))}
+        <Typography variant="body1" gutterBottom style={{ textAlign: "right", marginTop: "20px", color: "#712121", fontWeight: "bold" }}>
+          Total: ${totalPriceAdd.toFixed(2)}
+        </Typography>
+        <Divider variant="inset" />
+        <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "left", marginTop: "10px", color: "#712121" }} >User Details</Typography>
+
+        <TextField
+          label="Name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={uname}
+          onChange={handleNameChange}
+          error={nameError}
+          helperText={nameError ? 'Please enter a valid name (for ex: John)' : ''}
+        />
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setEmailError(!EMAIL_REGEX.test(e.target.value));
+          }}
+          error={emailError}
+          helperText={emailError ? 'Please enter a valid email address' : ''}
+          value={email}
+        />
+        <TextField
+          label="Address"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={address}
+          onChange={(e) => {
+            setAddress(e.target.value);
+            setAddressError(!ADDRESS_REGEX.test(e.target.value));
+          }}
+          error={addressError}
+          helperText={addressError ? 'Please enter a valid address' : ''}
+        />
+        {loading ? (
+          <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }} />
+        ) : (
+          <Button
+            variant="contained"
+            onClick={handlePlaceOrder}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "#FFC72C",
+              color: "black",
+              fontWeight: "bold",
+              borderRadius: "30px",
+            }}
           >
-            <div>
-              <Scrollbars style={{ width: 600, height: 500, color: "#FFD700" }} renderThumbVertical={({ style, ...props }) => (
-                <div {...props} style={{ ...style, backgroundColor: "rgb(255 217 60 / 94%)", borderRadius: "8px" }} />
-              )}>
-                <ModalContent>
-                  <Typography variant="h5" component="h2" gutterBottom style={{ fontStyle: "upper", textAlign: "center", marginBottom: "20px", color: "#712121", fontWeight: "bold" }}>
-                    Your Order
-                  </Typography>
-
-                  {cartItems.map((item, index) => (
-                    <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <Typography sx={{ color: "black", fontWeight: "bold", fontSize: "16px" }} variant="body1" gutterBottom>
-                        <span style={{ marginRight: "5px", color: "black" }}>{item.quantity} x </span> {item.name}
-                      </Typography>
-                      <Typography sx={{ color: "black", fontSize: "14px" }} variant="body1" gutterBottom>
-                        ${item.totalPrice.toFixed(2)}
-                      </Typography>
-                    </div>
-                  ))}
-                  <Typography variant="body1" gutterBottom style={{ textAlign: "right", marginTop: "20px", color: "#712121", fontWeight: "bold" }}>
-                    Total: ${totalPriceAdd.toFixed(2)}
-                  </Typography>
-                  <Divider variant="inset" />
-                  <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "left", marginTop: "10px", color: "#712121" }} >User Details</Typography>
-
-                  <TextField
-                    label="Name"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={name}
-                    onChange={handleNameChange}
-                    error={nameError}
-                    helperText={nameError ? 'Please enter a valid name (for ex: John)' : ''}
-                  />
-                  <TextField
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailError(!EMAIL_REGEX.test(e.target.value));
-                    }}
-                    error={emailError}
-                    helperText={emailError ? 'Please enter a valid email address' : ''}
-                    value={email}
-                  />
-                  <TextField
-                    label="Address"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={address}
-                    onChange={(e) => {
-                      setAddress(e.target.value);
-                      setAddressError(!ADDRESS_REGEX.test(e.target.value));
-                    }}
-                    error={addressError}
-                    helperText={addressError ? 'Please enter a valid address' : ''}
-                  />
-                  {loading ? (
-                    <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }} />
-                  ) : (
-                    <Button
-                      variant="contained"
-                      onClick={handlePlaceOrder}
-                      style={{
-                        marginTop: "20px",
-                        backgroundColor: "#FFC72C",
-                        color: "black",
-                        fontWeight: "bold",
-                        borderRadius: "30px",
-                      }}
-                    >
-                      Place Order
-                    </Button>
-                  )}
-                </ModalContent>
-              </Scrollbars>
-            </div>
-          </CustomModal>
+            Place Order
+          </Button>
+        )}
+      </ModalContent>
+    </Scrollbars>
+  </div>
+</CustomModal>
         </>
       ) : (
         <>

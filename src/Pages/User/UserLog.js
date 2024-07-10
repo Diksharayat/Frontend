@@ -39,17 +39,20 @@ function UserLog() {
       }
   
       const data = await response.json();
+      console.log(data,'data')
       
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token.toString());
       localStorage.setItem("email", email);
-      localStorage.setItem("contact", data.contact); // Assuming 'contact' is returned from server
-      localStorage.setItem("uname", data.uname);     // Assuming 'uname' is returned from server
+      localStorage.setItem("contact", data.contact); 
+      localStorage.setItem("uname", data.uname);    
+      localStorage.setItem("userId", data.userId);    
   
       toast.success("Login Successful");
       navigate("/breakfast");
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed. Please check your credentials and try again.");
+      toast.error("Login failed. Please check your credentials and try again.");
+    
     }
 };
 
@@ -86,6 +89,7 @@ function UserLog() {
               color: "#9a031fe0",
               margin: "auto",
               textAlign: "center",
+              marginTop:"40px"
             }}
           >
             ＬＯＧＩＮ

@@ -81,7 +81,10 @@ function UserReg() {
           <path fill="#FFC72C" fillOpacity="1" d="M0,224L60,229.3C120,235,240,245,360,208C480,171,600,85,720,80C840,75,960,149,1080,170.7C1200,192,1320,160,1380,144L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
         </svg>
         <Grid style={{ margin: "auto", marginTop: '10vh' }} className="Glass">
-          <Typography variant="h2" className="" style={{ color: c5 }}>
+          <Typography variant="h2" className="" style={{ color: c5 ,
+              margin: "auto",
+              textAlign: "center",
+              marginTop:"60px"}}>
             Ｊｏｉｎ Ｕｓ
           </Typography>
           <form onSubmit={handleFormSubmit} encType="multipart/form-data">

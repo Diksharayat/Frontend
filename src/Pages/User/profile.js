@@ -21,10 +21,10 @@ const UserProfileForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user data from API based on user ID
+   
     const fetchUserData = async () => {
       try {
-        // Retrieve user ID from local storage
+     
         const userId = localStorage.getItem('userId');
 
         if (!userId) {
@@ -67,14 +67,14 @@ const UserProfileForm = () => {
 
     try {
       const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, formData);
-      console.log(response.data); // Assuming your API returns a success message or updated user data
+      console.log(response.data); 
       toast.success("Profile updated successfully");
       navigate("/breakfast");
-      // Optionally, handle success message or update local state after successful update
+     
     } catch (error) {
       console.error('Error updating profile:', error);
       toast.error("Failed to update profile");
-      // Optionally, handle error state or show error message to the user
+      
     }
   };
 

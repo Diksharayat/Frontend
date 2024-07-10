@@ -46,12 +46,16 @@ const AddToCart = () => {
   const handleClose = () => setOpen(false);
   const [totalPriceAdd, setTotalPriceAdd] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [emailError, setEmailError] = useState(false); 
-  const [uname, setName] = useState('');
-  const [nameError, setNameError] = useState(false);
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [addressError, setAddressError] = useState(false);
+  const [formData, setFormData] = useState({
+    uname: '',
+    email: '',
+    address: '',
+  });
+  const [formErrors, setFormErrors] = useState({
+    unameError: false,
+    emailError: false,
+    addressError: false,
+  });
 
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -82,35 +86,59 @@ const AddToCart = () => {
 
   const fetchUserDetails = async () => {
     try {
-      // Retrieve user ID from local storage
       const userId = localStorage.getItem('userId');
       if (!userId) {
         throw new Error('User ID not found in local storage');
       }
-
+  
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
-
-      const userData = await response.json();
-      console.log('User Data:', userData);
-      setName(userData.uname);  // Assuming firstName, lastName, email, and address are returned from the API
-      setEmail(userData.email);
-      setAddress(userData.address);
+  
+      const data = await response.json();
+      console.log('User Data:', data);
+  
+      if (data.status === 'success' && data.user) {
+        const { uname, email, address } = data.user;
+        setFormData({
+          uname: uname || '',
+          email: email || '',
+          address: address || '',
+        });
+      } else {
+        throw new Error('Invalid API response format');
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
       toast.error('Failed to fetch user data');
     }
   };
+  
 
-  const handleNameChange = (e) => {
-    const inputName = e.target.value;
-    if (inputName === '' || NAME_REGEX.test(inputName)) {
-      setName(inputName);
-      setNameError(false);
-    } else {
-      setNameError(true);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    // Validate input
+    if (name === 'uname') {
+      setFormErrors({
+        ...formErrors,
+        unameError: !(value === '' || NAME_REGEX.test(value)),
+      });
+    } else if (name === 'email') {
+      setFormErrors({
+        ...formErrors,
+        emailError: !EMAIL_REGEX.test(value),
+      });
+    } else if (name === 'address') {
+      setFormErrors({
+        ...formErrors,
+        addressError: !ADDRESS_REGEX.test(value),
+      });
     }
   };
 
@@ -129,14 +157,23 @@ const AddToCart = () => {
   };
 
   const handlePlaceOrder = () => {
-    if (!uname || !email || !address) {
-      toast.error('Please fill all the required fields.');
-      return;
-    }
-
+    const { uname, email, address } = formData;
+    
+    // Validate form fields and errors (if needed)
+    // if (!uname || !email || !address || formErrors.unameError || formErrors.emailError || formErrors.addressError) {
+    //   toast.error('Please fill all the required fields correctly.');
+    //   return;
+    // }
+  
     setLoading(true);
-
+  
+    // Retrieve userId from local storage
+    const userId = localStorage.getItem('userId');
+    console.log(userId);
+  
+    // Prepare order data including userId
     const orderData = {
+      userId, // Include userId from local storage
       uname,
       email,
       address,
@@ -147,8 +184,9 @@ const AddToCart = () => {
       })),
       total: totalPriceAdd
     };
-
-    fetch('https://mcd-pi.vercel.app/api/placeOrder', {
+  
+    // Make POST request to place order API
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/placeOrder`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -157,24 +195,31 @@ const AddToCart = () => {
     })
     .then(response => {
       if (response.ok) {
+        // Clear cart items from local storage and state
         setCartItems([]);
         localStorage.removeItem('cartItems');
+  
+        // Close modal or dialog
         handleClose();
+  
+        // Show success message and navigate to thank you page
         toast.success("Order Placed Successfully");
-        navigate('/thankyou'); //
+        navigate('/thankyou');
       } else {
+        // Handle failure to place order
         alert('Failed to place order. Please try again later.');
       }
     })
     .catch(error => {
+      // Handle network or server errors
       console.error('Error:', error);
       alert('An error occurred while processing your request.');
     })
     .finally(() => {
-      setLoading(false); 
+      setLoading(false);
     });
   };
-
+  
   const handleQuantityChange = (productId, action) => {
     const updatedItems = cartItems.map(item => {
       if (item.product_id === productId) {
@@ -320,40 +365,39 @@ const AddToCart = () => {
         <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "left", marginTop: "10px", color: "#712121" }} >User Details</Typography>
 
         <TextField
+          name="uname"
           label="Name"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={uname}
-          onChange={handleNameChange}
-          error={nameError}
-          helperText={nameError ? 'Please enter a valid name (for ex: John)' : ''}
+          value={formData.uname}
+          onChange={handleInputChange}
+          error={formErrors.unameError}
+          helperText={formErrors.unameError ? 'Please enter a valid name (for ex: John)' : ''}
+          disabled
         />
         <TextField
+          name="email"
           label="Email"
           variant="outlined"
           fullWidth
           margin="normal"
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setEmailError(!EMAIL_REGEX.test(e.target.value));
-          }}
-          error={emailError}
-          helperText={emailError ? 'Please enter a valid email address' : ''}
-          value={email}
+          onChange={handleInputChange}
+          error={formErrors.emailError}
+          helperText={formErrors.emailError ? 'Please enter a valid email address' : ''}
+          value={formData.email}
+          disabled
         />
         <TextField
+          name="address"
           label="Address"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={address}
-          onChange={(e) => {
-            setAddress(e.target.value);
-            setAddressError(!ADDRESS_REGEX.test(e.target.value));
-          }}
-          error={addressError}
-          helperText={addressError ? 'Please enter a valid address' : ''}
+          value={formData.address}
+          onChange={handleInputChange}
+          error={formErrors.addressError}
+          helperText={formErrors.addressError ? 'Please enter a valid address' : ''}
         />
         {loading ? (
           <CircularProgress sx={{ color: "#ffd93c" }} style={{ margin: 'auto' }} />

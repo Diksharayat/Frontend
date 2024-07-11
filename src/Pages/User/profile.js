@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const UserProfileForm = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
+    uname: '',
     lastName: '',
     birthday: '',
     gender: '',
@@ -33,8 +33,9 @@ const UserProfileForm = () => {
 
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`);
         const userData = response.data.user;
+        console.log(userData);
         setFormData({
-          firstName: userData.firstName || '',
+          uname: userData.uname || '',
           lastName: userData.lastName || '',
           birthday: userData.birthday || '',
           gender: userData.gender || '',
@@ -90,7 +91,7 @@ const UserProfileForm = () => {
               fullWidth
               type="text"
               name="firstName"
-              value={formData.firstName}
+              value={formData.uname}
               onChange={handleChange}
               label="First Name"
               required
@@ -140,7 +141,7 @@ const UserProfileForm = () => {
               label="Email"
               placeholder="name@company.com"
               required
-              disabled // Disable editing email field
+              disabled 
             />
           </Grid>
           <Grid item xs={12} sm={6}>

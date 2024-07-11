@@ -56,7 +56,7 @@ function UserReg() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
   
-    fetch('https://mcd-pi.vercel.app/api/register', {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

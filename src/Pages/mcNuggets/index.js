@@ -5,15 +5,15 @@ import { styled } from '@mui/material/styles';
 
 const addToCart = async (product_id, name, description, price, image) => {
   try {
-    // Check if email exists in local storage
+   
     const userEmail = localStorage.getItem('email');
     if (!userEmail) {
-      // If email does not exist, show an error or handle it accordingly
+      
       toast.error("Please log in to add items to the cart");
       return;
     }
 
-    // Proceed to add item to cart if email exists
+
     const cleanedPrice = parseFloat(price.replace('$', ''));
     const newItem = { product_id, name, description, price: cleanedPrice, image, quantity: 1, totalPrice: cleanedPrice };
     let existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -44,7 +44,7 @@ const McNuggets = () => {
   const [loading, setLoading] = useState(true); 
   
  
-// Styled component for the card
+
 const CustomCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',

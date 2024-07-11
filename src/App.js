@@ -20,6 +20,7 @@ import UserLog from "./Pages/User/UserLog";
 import UserReg from "./Pages/User/UserReg";
 import UserProfileForm from "./Pages/User/profile";
 import ContactForm from "./Pages/ContactUs";
+import Orders from "./Pages/User/Orders";
 
 
 
@@ -147,6 +148,18 @@ const router = createBrowserRouter(
               <SideBar>
                
                <ContactForm/>
+              </SideBar>
+              </Suspense>
+            </>
+          }
+        ></Route>
+         <Route
+          path="/orders"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SideBar>
+                <Orders/>
               </SideBar>
               </Suspense>
             </>

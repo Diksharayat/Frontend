@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
+    uname: '',
     lastName: '',
     email: '',
     contact: '',
@@ -41,7 +41,7 @@ const ContactForm = () => {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`);
         const userData = response.data.user;
         setFormData({
-          firstName: userData.firstName || '',
+          uname: userData.uname || '',
           lastName: userData.lastName || '',
           email: userData.email || '',
           contact: userData.contact || ''
@@ -89,7 +89,7 @@ const ContactForm = () => {
       // Optionally reset form fields or show success message
       // Clear form fields after successful submission
       setFormData({
-        firstName: '',
+        uname: '',
         lastName: '',
         email: '',
         contact: '',
@@ -121,7 +121,7 @@ const ContactForm = () => {
               fullWidth
               type="text"
               name="firstName"
-              value={formData.firstName}
+              value={formData.uname}
               onChange={handleChange}
               label="First Name"
               required

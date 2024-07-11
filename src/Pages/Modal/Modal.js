@@ -66,8 +66,7 @@ const Modal = ({ cartItems }) => {
     </Typography>
     {cartItems.map((item, index) => (
         <div key={item.product_id} style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-        {/* Display item image
-        <img src={item.image} alt={item.name} style={{ width: "50px", height: "50px", marginRight: "10px" }} /> */}
+       
       <div key={item.product_id} style={{ textAlign: "left" }}>
         <Typography variant="body1" gutterBottom>
           <span style={{ marginRight: "5px" }}>{index + 1}.</span> Item Name: {item.name}

@@ -190,6 +190,8 @@ useEffect(() => {
       navigate("/profile");
     }else if(action==="ContactUs"){
       navigate("/contact");
+    }else if(action==="Orders"){
+      navigate("/orders");
     }
    
    

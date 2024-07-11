@@ -99,6 +99,20 @@ export default function PersistentDrawerLeft(props) {
   const [showProfile, setShowProfile] = useState(false);
 
 
+  useEffect(() => {
+    const handleResize = () => {
+      setOpen(window.innerWidth >= 768); // Adjust this width according to your design's responsiveness
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+
+
 
   useEffect(() => {
     const fetchCartItemsCount = () => {
@@ -129,10 +143,7 @@ useEffect(() => {
 
 
 
-  const handleDrawerOpen = () => {
-    setOpen(!open);
-  };
-
+  
 
   const handleButtonClick = () => {
     setIsModalOpen(true);
@@ -166,6 +177,10 @@ useEffect(() => {
 
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleDrawerOpen = (forceClose = false) => {
+    setOpen(forceClose ? false : !open);
+  };
 
   
   const handleAvatarClick = (event) => {
@@ -211,10 +226,10 @@ useEffect(() => {
     <Box sx={{ display: "flex", padding: "4px" }}>
    <AppBar position="fixed" open={open} sx={{ backgroundColor: "#5b0707", boxShadow: 0 }}>
         <Toolbar>
-          <IconButton
+        <IconButton
             color="black"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={() => handleDrawerOpen()}
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >

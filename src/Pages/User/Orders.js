@@ -83,7 +83,8 @@ const OrderHistory = ({ userId }) => {
             <ListItem>
               <ListItemText
                 primary={`Order #${order._id}`}
-                secondary={`Total: $${order.orders.reduce((acc, curr) => acc + curr.total, 0).toFixed(2)}`} // Calculate total of all orders
+               
+                // secondary={`Total: $${order.orders.reduce((acc, curr) => acc + curr.total, 0).toFixed(2)}`} // Calculate total of all orders
               />
             </ListItem>
             <List>

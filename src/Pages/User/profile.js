@@ -33,7 +33,7 @@ const UserProfileForm = () => {
 
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`);
         const userData = response.data.user;
-        console.log(userData);
+      
         setFormData({
           uname: userData.uname || '',
           lastName: userData.lastName || '',

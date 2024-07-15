@@ -7,6 +7,7 @@ import Egg from "../../assets/Images/Egg-removebg-preview.png";
 import fruit from "../../assets/Images/fruit-removebg-preview.png";
 import happyHam from "../../assets/Images/happyHam-removebg-preview.png";
 
+
 const HomePageCarousel = () => {
   const addToCartBtnStyle = {
     backgroundColor: "#ffd93cf0",

@@ -9,7 +9,7 @@ import Burger from "./Pages/Burgers";
 import Sandwiches from "./Pages/Sandwiches";
 import McNuggets from "./Pages/mcNuggets";
 import Happy from "./Pages/Happy";
-import AddToCart from "./Pages/AddToCart/AddToCart";
+
 import Fries from "./Pages/Fries";
 import CartMapping from "./Pages/Breakfast";
 import SliderTemplate from "./Pages/Home";
@@ -21,10 +21,18 @@ import UserReg from "./Pages/User/UserReg";
 import UserProfileForm from "./Pages/User/profile";
 import ContactForm from "./Pages/ContactUs";
 import Orders from "./Pages/User/Orders";
+import AddToCart from "./Pages/AddToCart";
+import AdiminLog from "./admin/AdminLog";
+import ALogin from "./admin/AdminLog";
+import AdminProfile from "./admin/AdminProfile";
+import AddCategory from "./admin/AddCategory";
+import AddDishes from "./admin/AddDishes";
+import AllOrders from "./admin/AllOrders";
 
 
 
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
+const AdminSidebar= lazy(()=> import("./admin/Components/SideBar/index2"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,16 +48,15 @@ const router = createBrowserRouter(
               </Suspense>
             </>} />
 
-        <Route path="/addtocart" element={<AddToCart />} />
+        <Route path="/addtocart" element={<AddToCart/>} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/thankyou" element={<Thankyou/>} />
         <Route path="/userlog" element={<UserLog/>} />
         <Route path="/userreg" element={<UserReg/>} />
         {/* <Route path="/userprofile" element={<UserProfile/>} /> */}
         
-       
-    
-      
+
+  
         <Route
           path="/breakfast"
           element={
@@ -165,6 +172,88 @@ const router = createBrowserRouter(
             </>
           }
         ></Route>
+
+
+
+
+
+        {/* admin routes */}
+
+        <Route path="/adminlog" element={<ALogin/>} />
+
+
+        <Route
+          path="/adminportal"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSidebar>
+                
+             
+              </AdminSidebar>
+              </Suspense>
+            </>
+          }
+        ></Route>   
+        <Route
+          path="/adminprofile"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSidebar>
+                
+             <AdminProfile/>
+              </AdminSidebar>
+              </Suspense>
+            </>
+          }
+        ></Route>   
+        <Route
+          path="/manage-category"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSidebar>
+                
+             <AddCategory/>
+              </AdminSidebar>
+              </Suspense>
+            </>
+          }
+        ></Route>  
+         <Route
+          path="/manage-dishes"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSidebar>
+                
+             <AddDishes/>
+              </AdminSidebar>
+              </Suspense>
+            </>
+          }
+        ></Route> 
+
+<Route
+          path="/allOrders"
+          element={
+            <>
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSidebar>
+                
+             <AllOrders/>
+              </AdminSidebar>
+              </Suspense>
+            </>
+          }
+        ></Route> 
+       
+
+
+
+
+
       </Route>
   
     </>

@@ -152,11 +152,23 @@ const OrderHistory = () => {
                             Order Details
                           </Typography>
                           <List>
+                            {subOrder.items.map((item, itemIndex) => (
+                              <ListItem key={`${order._id}-${index}-${itemIndex}`}>
+                                <ListItemText
+                                  primary={
+                                    <>
+                                      <Typography variant="body1">Item {itemIndex + 1}</Typography>
+                                      <Typography variant="body1">Quantity: {item.quantity}</Typography>
+                                      <Typography variant="body1">Name: {item.name}</Typography>
+                                      <Typography variant="body1">Price: ${item.price.toFixed(2)}</Typography>
+                                    </>
+                                  }
+                                />
+                              </ListItem>
+                            ))}
                             <ListItem>
                               <ListItemText
-                             sx={{color:"rgb(154 3 31 / 88%)"}}
-                                primary={`Items: ${subOrder.items.map(item => `${item.quantity} x ${item.name}`).join(', ')}`}
-                                secondary={`Total: $${subOrder.total.toFixed(2)}`}
+                                primary={`Total: $${subOrder.total.toFixed(2)}`}
                               />
                             </ListItem>
                           </List>

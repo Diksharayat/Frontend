@@ -18,7 +18,7 @@ import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { toast } from 'react-toastify';
-import shoping from "../../assets/Images/shoping.jpg";
+import shoping from "../assets/Images/shoping.jpg";
 
 const NAME_REGEX = /^[A-Z][a-z]*$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

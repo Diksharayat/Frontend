@@ -9,9 +9,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { decodeToken } from "../../utils";
-import AddToCarts from "../../Components/SideBar/Components/AddToCart";
 
-const CartMapping = () => {
+
+const AddCategory = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const abc = decodeToken();
@@ -40,30 +40,29 @@ const CartMapping = () => {
     padding: "10px 10px",
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/category/${categoryId}/dishes`);
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch products");
-  //       }
-  //       const data = await response.json();
-       
-  //       const breakfastCategory = data.find(categories => categories.title === "BREAKFAST");
-  //       if (breakfastCategory) {
-  //         setProducts(breakfastCategory.dishes);
-  //       } else {
-  //         console.error("BREAKFAST category not found in data");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/products`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        const filteredProducts = data.filter((product) => product.id <= 6);
+        setProducts(filteredProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchProducts();
+  }, []);
+
+  
 
   if (loading) {
     return (
@@ -125,16 +124,6 @@ const CartMapping = () => {
             <Button
               variant="contained"
               style={addToCartBtnStyle}
-              onClick={() =>
-                AddToCarts(
-                  product.id,
-                  product.name,
-                  product.description,
-                  product.price,
-                  product.image,
-                  product.quantity
-                )
-              }
             >
               Add to Cart
             </Button>
@@ -145,4 +134,5 @@ const CartMapping = () => {
   );
 };
 
-export default CartMapping;
+export default AddCategory;
+

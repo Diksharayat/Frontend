@@ -13,12 +13,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import logo from "../../assets/Images/logo.png";
-import fish from "../../assets/Images/fish.png";
-import meals from "../../assets/Images/meals.png";
-import burgers from "../../assets/Images/burgers.png";
-import frr from "../../assets/Images/frr.png";
-import happy from "../../assets/Images/happy.png";
-import breakfast from "../../assets/Images/breakfast.png";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { Avatar, Badge, Button, Grid, LinearProgress, MenuItem } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -97,6 +91,7 @@ export default function PersistentDrawerLeft(props) {
   const token = localStorage.getItem("token");
   const userEmail = localStorage.getItem("email"); 
   const [showProfile, setShowProfile] = useState(false);
+  const [menuItems, setMenuItems] = useState([]);
 
 
   useEffect(() => {
@@ -140,6 +135,28 @@ useEffect(() => {
     setCartItemsCount(0); 
   }
 }, [userEmail]); //
+
+
+
+useEffect(() => {
+  const fetchMenuItems = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/category`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch menu items");
+      }
+      const data = await response.json();
+      setMenuItems(data[0].categories); // Assuming data structure is an array with categories
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+    }
+  };
+
+  fetchMenuItems();
+}, []);
+
+
+
 
 
 
@@ -350,235 +367,27 @@ useEffect(() => {
           </DrawerHeader>
           <Divider />
           <List component="nav" aria-labelledby="nested-list-subheader" style={{backgroundColor:"#5b0707"}}>
-            <>
-              <NavLink
-                to="/breakfast"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={breakfast}
-                          alt="frr"
-                          width={120}
-                          height={80}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Breakfast"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color:"rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px" ,fontWeight:"bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated title={"BREAKFAST"} />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
+          {menuItems.map((item) => (
+  <NavLink
+    key={item._id}
+    to={`/${item.title.toLowerCase()}`}
+    style={{ textDecoration: "none", color: "inherit" }}
+  >
+    <ListItemButton>
+      <ListItemIcon>
+        <img
+          src={item.image}
 
-              <NavLink
-                to="/burger"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={burgers}
-                          alt="frr"
-                          width={120}
-                          height={80}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Burgers"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated title={"BURGERS"} />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
-              <NavLink
-                to="/sandwich"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={fish}
-                          alt="fish"
-                          width={120}
-                          height={80}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Breakfast"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated
-                              title={"CHICKEN & FISH SANDWICHES"}
-                            />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
+          alt={item.title}
+          style={{ width: 100, height: 80, borderRadius: "50%" }}
+        />
+      </ListItemIcon>
+      
+      <ListItemText primary={item.title} />
+    </ListItemButton>
+  </NavLink>
+))}
 
-              <NavLink
-                to="/mcNuggets"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={meals}
-                          alt="meals"
-                          width={150}
-                          height={100}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Breakfast"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated title={"McNUGGETS® & MEALS"} />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
-
-              <NavLink
-                to="/fries"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={frr}
-                          alt="frr"
-                          width={150}
-                          height={100}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Breakfast"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated title={"FRIES & SIDES"} />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
-              <NavLink
-                to="/happy"
-                style={{ textDecoration: "none" }}
-                className={({ isActive }) =>
-                  isActive ? "menuActive" : "menuInactive"
-                }
-              >
-                <ListItemButton>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemIcon>
-                        <img
-                          src={happy}
-                          alt="happy"
-                          width={150}
-                          height={100}
-                          style={{ borderRadius: "100px", marginRight: "10px" }}
-                          title="Breakfast"
-                        />
-                      </ListItemIcon>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ color: "rgb(255, 249, 196)", marginLeft: "30px", fontSize: "12px", fontWeight: "bold" }}
-                            variant="subtitle1"
-                            fontWeight="semiBold"
-                          >
-                            <SideBarMemoizated title={"HAPPY MEAL®"} />
-                          </Typography>
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </NavLink>
-            </>
           </List>
         </Scrollbars>
       </Drawer>

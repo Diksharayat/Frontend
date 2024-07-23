@@ -211,6 +211,15 @@ const UserProfileForm = () => {
           >
             Save
           </Button>
+          <Button
+            variant="contained"
+            size="large"
+           
+            onClick={()=>{navigate("/breakfast")}}
+            style={{ backgroundColor: "#9a031fe0", color: "#FFF",marginLeft:"10px" }}
+          >
+          Skip
+          </Button>
         </Box>
       </form>
     </Box>

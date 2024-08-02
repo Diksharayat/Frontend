@@ -2,33 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddToCarts from '../../Components/SideBar/Components/AddToCart';
+import { useParams } from 'react-router-dom';
 
 
 const Sandwiches = () => {
-
+  const {id}=useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`); 
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/categories/${id}/dishes`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch products');
+          throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        const filteredProducts = data.filter(product => product.id > 21 && product.id <= 27);
-        setProducts(filteredProducts);
+        setProducts(data.dishes); 
+
       } catch (error) {
-        console.error('Error fetching products:', error);
-    } finally {
-        setLoading(false); 
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, []);
-  
+    fetchData();
+  }, [id]);
  
 
 const CustomCard = styled(Card)(({ theme }) => ({

@@ -55,7 +55,7 @@ const router = createBrowserRouter(
         {/* <Route path="/userprofile" element={<UserProfile/>} /> */}
 
         <Route
-          path="/breakfast"
+          path={`/breakfast/:id`}
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>
@@ -67,7 +67,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="/burgers"
+          path="/burgers/:id"
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>
@@ -79,7 +79,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="/sandwiches"
+          path="/sandwiches/:id"
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>
@@ -91,7 +91,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="/mcNuggets® & meals"
+          path="/mcNuggets® & meals/:id"
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>
@@ -103,7 +103,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="/fries & sides"
+          path="/fries & sides/:id"
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>
@@ -115,7 +115,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="/happy meal®"
+          path="/happy meal®/:id"
           element={
             <>
               <Suspense fallback={<div>Loading...</div>}>

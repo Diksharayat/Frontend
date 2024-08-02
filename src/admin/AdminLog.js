@@ -11,11 +11,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PersonIcon from "@mui/icons-material/Person";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
-import burbg from "../assets/Images/burbg.png";
-import Egg from "../assets/Images/Egg.jpg";
 import fries from "../assets/Images/fries-removebg-preview.png";
 
 function ALogin() {
@@ -28,8 +24,7 @@ function ALogin() {
   const visibility = () => {
     setShow(show ? false : true);
   };
-  //
-  // alert(localStorage.getItem('Ngo'))
+
   if (localStorage.getItem("NgoLog")) {
     navigate("/NgoProfile");
   }

@@ -1,11 +1,11 @@
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import the styles for the carousel
-import "./Home.css"; // Import your custom CSS for carousel styles
+import "react-responsive-carousel/lib/styles/carousel.min.css"; 
+import "./Home.css"; 
 import { Typography, Button } from "@mui/material";
-import Egg from "../../assets/Images/Egg-removebg-preview.png";
-import fruit from "../../assets/Images/fruit-removebg-preview.png";
+import fruit from "../../assets/Images/fruit.png";
 import happyHam from "../../assets/Images/happyHam-removebg-preview.png";
+import { Egg } from "@mui/icons-material";
 
 
 const HomePageCarousel = () => {
@@ -22,12 +22,12 @@ const HomePageCarousel = () => {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "400px", // Adjust the height of the carousel
-    backgroundColor: "rgb(244 223 148 / 78%)", // Optional: set background color
+    height: "400px", 
+    backgroundColor: "rgb(244 223 148 / 78%)", 
   };
 
   const imgStyle = {
-    height: "300px", // Adjust the maximum height of the images
+    height: "300px", 
     width: "auto",
     justifyContent: "center",
   };

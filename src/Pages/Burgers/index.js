@@ -3,9 +3,11 @@ import { Button, Card, CardContent, CircularProgress, Grid, Typography } from '@
 import { styled } from '@mui/material/styles';
 
 import AddToCarts from '../../Components/SideBar/Components/AddToCart';
+import { useParams } from 'react-router-dom';
 
 
 const Burger = () => {
+  const {id}=useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); 
   
@@ -35,24 +37,26 @@ const CustomCard = styled(Card)(({ theme }) => ({
 
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`); 
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/categories/${id}/dishes`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch products');
+          throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        const filteredProducts = data.filter(product => product.id > 6 && product.id <= 12);
-        setProducts(filteredProducts);
+        setProducts(data.dishes); 
+
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, []);
+    fetchData();
+  }, [id]);
 
   
   
@@ -75,25 +79,51 @@ const CustomCard = styled(Card)(({ theme }) => ({
     );
   }
 
- 
   return (
     <Grid container spacing={2}>
-      {products.map(product => (
-        <Grid item xs={12} sm={6} md={4} lg={4} key={product.id} style={{ marginBottom: '20px', marginTop: '20px' }}>
+      {products.map((product) => (
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          lg={4}
+          key={product._id} // Use a unique key for each item, assuming _id is unique
+          style={{ marginBottom: "20px", marginTop: "20px" }}
+        >
           <CustomCard>
-            <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+            <img
+              src={product.image}
+              alt={product.name}
+              style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }}
+            />
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#26120fbd", fontWeight: "bold" }} gutterBottom>
+              <Typography
+                variant="h5"
+                sx={{ color: "#26120fbd", fontWeight: "bold" }}
+                gutterBottom
+              >
                 {product.name}
               </Typography>
               <Typography variant="body1" paragraph>
                 {product.description}
               </Typography>
-              <Typography variant="body1">
-                Price: {product.price}
-              </Typography>
+              <Typography variant="body1">Price: {product.price}</Typography>
             </CardContent>
-            <Button variant="contained" style={addToCartBtnStyle} onClick={() => AddToCarts(product.id, product.name, product.description, product.price, product.image, product.quantity)}>
+            <Button
+              variant="contained"
+              style={addToCartBtnStyle}
+              onClick={() =>
+                AddToCarts(
+                  product.id,
+                  product.name,
+                  product.description,
+                  product.price,
+                  product.image,
+                  product.quantity
+                )
+              }
+            >
               Add to Cart
             </Button>
           </CustomCard>

@@ -8,14 +8,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { decodeToken } from "../../utils";
 import AddToCarts from "../../Components/SideBar/Components/AddToCart";
+import { useParams } from "react-router-dom";
 
 const CartMapping = () => {
+  const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const abc = decodeToken();
-  console.log(abc, "abc");
 
   const CustomCard = styled(Card)(({ theme }) => ({
     display: "flex",
@@ -40,30 +39,27 @@ const CartMapping = () => {
     padding: "10px 10px",
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/category/${categoryId}/dishes`);
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch products");
-  //       }
-  //       const data = await response.json();
-       
-  //       const breakfastCategory = data.find(categories => categories.title === "BREAKFAST");
-  //       if (breakfastCategory) {
-  //         setProducts(breakfastCategory.dishes);
-  //       } else {
-  //         console.error("BREAKFAST category not found in data");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/categories/${id}/dishes`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data.dishes); // Assuming data structure matches the provided JSON
 
-  //   fetchData();
-  // }, []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   if (loading) {
     return (
@@ -100,7 +96,7 @@ const CartMapping = () => {
           sm={6}
           md={4}
           lg={4}
-          key={product.id}
+          key={product._id} // Use a unique key for each item, assuming _id is unique
           style={{ marginBottom: "20px", marginTop: "20px" }}
         >
           <CustomCard>

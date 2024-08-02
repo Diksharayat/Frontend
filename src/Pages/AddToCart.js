@@ -243,7 +243,7 @@ const AddToCart = () => {
   };
 
   const handleReturnToShop = () => {
-    navigate("/breakfast");
+    navigate("/breakfast/669654c6d602104b2280e0f7");
   };
 
   return (

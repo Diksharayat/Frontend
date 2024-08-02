@@ -332,7 +332,6 @@ useEffect(() => {
         sx={{
           m: 0,
           width: drawerWidth,
-          // backgroundColor:"#DDBB99",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
@@ -367,10 +366,10 @@ useEffect(() => {
           </DrawerHeader>
           <Divider />
           <List component="nav" aria-labelledby="nested-list-subheader" style={{backgroundColor:"#5b0707"}}>
-          {menuItems.map((item) => (
+          {menuItems?.map((item) => (
   <NavLink
     key={item._id}
-    to={`/${item.title.toLowerCase()}`}
+    to={`/${item.title.toLowerCase()}/${item?.categoryId}`}
     style={{ textDecoration: "none", color: "inherit" }}
   >
     <ListItemButton>
@@ -397,7 +396,7 @@ useEffect(() => {
         style={{
           padding: "10px 40px 40px 40px",
           minHeight: "100vh",
-          backgroundColor: yellow[100], // Use yellow[100] from MUI theme for background color
+          backgroundColor: yellow[100], 
         }}
       >
         <DrawerHeader />

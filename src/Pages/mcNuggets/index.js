@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddToCarts from '../../Components/SideBar/Components/AddToCart';
+import { useParams } from 'react-router-dom';
 
 
  
 const McNuggets = () => {
+  const {id}=useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); 
   
@@ -29,24 +31,27 @@ const CustomCard = styled(Card)(({ theme }) => ({
 
 
 useEffect(() => {
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`); 
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/categories/${id}/dishes`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch products');
+        throw new Error("Failed to fetch products");
       }
       const data = await response.json();
-      const filteredProducts = data.filter(product => product.id > 19 && product.id <= 21);
-      setProducts(filteredProducts);
+      setProducts(data.dishes); 
+
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
-  fetchProducts();
-}, []);
+  fetchData();
+}, [id]);
+
 
   const addToCartBtnStyle = {
     backgroundColor: "#ffd93cf0 ",

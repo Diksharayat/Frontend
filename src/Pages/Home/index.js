@@ -43,7 +43,7 @@ const HomePageCarousel = () => {
         style={{ width: "100%", maxWidth: "100%", backgroundColor: "yellow" }}
       >
         <div style={slideStyle}>
-          <img src={Egg} alt="Egg" style={imgStyle} />
+          <img src={fruit} alt="Egg" style={imgStyle} />
           <div className="legend" style={{ backgroundColor: "#26120fbd" }}>
             <Typography variant="h5" component="h2">
               Welcome to our website

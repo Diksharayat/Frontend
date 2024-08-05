@@ -26,6 +26,7 @@ import AdminProfile from "./admin/AdminProfile";
 import AddCategory from "./admin/AddCategory/AddCategory";
 import AddDishes from "./admin/AddDishes";
 import AllOrders from "./admin/AllOrders";
+import AdminOrdersTable from "./admin/AllOrders";
 
 const SideBar = lazy(() => import("./Components/SideBar/index2"));
 const AdminSidebar = lazy(() => import("./admin/Components/SideBar/index2"));
@@ -220,7 +221,7 @@ const router = createBrowserRouter(
             <>
               <Suspense fallback={<div>Loading...</div>}>
                 <AdminSidebar>
-                  <AllOrders />
+                  <AdminOrdersTable />
                 </AdminSidebar>
               </Suspense>
             </>

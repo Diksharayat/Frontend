@@ -86,7 +86,7 @@ const CustomCard = styled(Card)(({ theme }) => ({
           sm={6}
           md={4}
           lg={4}
-          key={product._id} // Use a unique key for each item, assuming _id is unique
+          key={product._id} 
           style={{ marginBottom: "20px", marginTop: "20px" }}
         >
           <CustomCard>

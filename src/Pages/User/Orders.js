@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Table, TableHead, TableBody, TableRow, TableCell, Button, Collapse, Box, List, ListItem, ListItemText } from '@mui/material'; 
+import {
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+  Collapse,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  TextField
+} from '@mui/material';
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [orderIdFilter, setOrderIdFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -22,6 +39,7 @@ const OrderHistory = () => {
         const sortedOrders = flattenedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         setOrders(sortedOrders);
+        setFilteredOrders(sortedOrders);
       } catch (error) {
         console.error('Error fetching order history:', error);
       }
@@ -30,12 +48,17 @@ const OrderHistory = () => {
     fetchOrderHistory();
   }, []);
 
+  useEffect(() => {
+    const filtered = orders.filter(order => {
+      const matchesOrderId = orderIdFilter ? order._id.includes(orderIdFilter) : true;
+      const matchesDate = dateFilter ? new Date(order.date).toLocaleDateString() === new Date(dateFilter).toLocaleDateString() : true;
+      return matchesOrderId && matchesDate;
+    });
+    setFilteredOrders(filtered);
+  }, [orderIdFilter, dateFilter, orders]);
+
   const handleExpandOrder = (orderId) => {
-    if (expandedOrderId === orderId) {
-      setExpandedOrderId(null);
-    } else {
-      setExpandedOrderId(orderId);
-    }
+    setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
   return (
@@ -43,6 +66,24 @@ const OrderHistory = () => {
       <Typography variant="h4" gutterBottom sx={{ color: "rgb(154 3 31 / 88%)" }}>
         Order History
       </Typography>
+      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+        <TextField
+          label="Filter by Order ID"
+          variant="outlined"
+          value={orderIdFilter}
+          onChange={(e) => setOrderIdFilter(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          type="date"
+          label="Filter by Date"
+          variant="outlined"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+        />
+      </Box>
       <Table>
         <TableHead>
           <TableRow>
@@ -54,7 +95,7 @@ const OrderHistory = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <React.Fragment key={order._id}>
               <TableRow>
                 <TableCell>{order._id}</TableCell>

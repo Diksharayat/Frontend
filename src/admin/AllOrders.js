@@ -10,12 +10,16 @@ import {
   MenuItem,
   Paper,
   Typography,
-  Box
+  Box,
+  TextField
 } from '@mui/material';
 import axios from 'axios';
 
 const AdminOrdersTable = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [emailFilter, setEmailFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -23,8 +27,7 @@ const AdminOrdersTable = () => {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/orders`);
         const fetchedOrders = response.data;
 
-        // Flatten the orders into a single array and sort them by date
-        const allOrders = fetchedOrders.flatMap(user => 
+        const allOrders = fetchedOrders.flatMap(user =>
           user.orders.map(order => ({
             ...order,
             userId: user._id,
@@ -35,6 +38,7 @@ const AdminOrdersTable = () => {
         ).sort((a, b) => new Date(b.date) - new Date(a.date));
 
         setOrders(allOrders);
+        setFilteredOrders(allOrders);
       } catch (error) {
         console.error('Error fetching orders:', error);
       }
@@ -42,6 +46,15 @@ const AdminOrdersTable = () => {
 
     fetchOrders();
   }, []);
+
+  useEffect(() => {
+    const filtered = orders.filter(order => {
+      const matchesEmail = emailFilter ? order.email.toLowerCase().includes(emailFilter.toLowerCase()) : true;
+      const matchesDate = dateFilter ? new Date(order.date).toLocaleDateString() === new Date(dateFilter).toLocaleDateString() : true;
+      return matchesEmail && matchesDate;
+    });
+    setFilteredOrders(filtered);
+  }, [emailFilter, dateFilter, orders]);
 
   const handleStatusChange = (orderId, newStatus) => {
     setOrders(orders.map(order =>
@@ -51,9 +64,27 @@ const AdminOrdersTable = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom sx={{ mb: 2, color: 'primary.main' }}>
-        Orders List
+      <Typography variant="h4" gutterBottom sx={{ color: "rgb(154 3 31 / 88%)" }}>
+      Orders List
       </Typography>
+      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+        <TextField
+          label="Filter by Email"
+          variant="outlined"
+          value={emailFilter}
+          onChange={(e) => setEmailFilter(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          type="date"
+          label="Filter by Date"
+          variant="outlined"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+        />
+      </Box>
       <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 1 }}>
         <Table>
           <TableHead>
@@ -67,17 +98,17 @@ const AdminOrdersTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map(order => (
+            {filteredOrders.map(order => (
               <TableRow
                 key={order._id}
                 sx={{
-                  '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' }, // Alternating row colors
-                  '&:hover': { backgroundColor: '#e0f7fa' }, // Highlight row on hover
+                  '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' },
+                  '&:hover': { backgroundColor: '#ef78784f' },
                 }}
               >
                 <TableCell>
                   <Select
-                    value={order.status || 'preparing'} // default to 'preparing' if no status
+                    value={order.status || 'preparing'}
                     onChange={(e) => handleStatusChange(order._id, e.target.value)}
                     fullWidth
                     sx={{ minWidth: 120 }}
@@ -88,7 +119,7 @@ const AdminOrdersTable = () => {
                 </TableCell>
                 <TableCell sx={{ color: '#555' }}>{order.uname}</TableCell>
                 <TableCell sx={{ color: '#555' }}>{order.email}</TableCell>
-                <TableCell sx={{ color: '#00796b' }}>${order.total.toFixed(2)}</TableCell> {/* Green color for amount */}
+                <TableCell sx={{ color: 'rgb(154 3 31 / 88%)' }}>${order.total.toFixed(2)}</TableCell>
                 <TableCell sx={{ color: '#555' }}>{order.address}</TableCell>
                 <TableCell sx={{ color: '#555' }}>{new Date(order.date).toLocaleString()}</TableCell>
               </TableRow>
@@ -101,3 +132,4 @@ const AdminOrdersTable = () => {
 };
 
 export default AdminOrdersTable;
+ 

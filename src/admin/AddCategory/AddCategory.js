@@ -13,14 +13,12 @@ import Modal from "@mui/material/Modal";
 
 const AddCategory = () => {
   const [menuItems, setMenuItems] = useState([]);
-  const [openAddModal, setOpenAddModal] = React.useState(false);
-  const [openEditModal, setOpenEditModal] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null); 
-
-  const [imageFile, setImageFile] = useState(null);
-  const [editImageFile, setEditImageFile] = useState(null); 
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categoryImageUrl, setCategoryImageUrl] = useState("");
+  const [editImageFile, setEditImageFile] = useState(null);
   const [categoryTitle, setCategoryTitle] = useState("");
-  const [selectedDevice, setSelectedDevice] = useState("");
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -32,6 +30,7 @@ const AddCategory = () => {
           throw new Error("Failed to fetch menu items");
         }
         const data = await response.json();
+        console.log("Fetched categories:", data[0].categories);
         setMenuItems(data[0].categories);
       } catch (error) {
         console.error("Error fetching menu items:", error);
@@ -48,15 +47,15 @@ const AddCategory = () => {
           method: "DELETE",
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to delete category");
       }
-  
+
       setMenuItems((prevItems) =>
         prevItems.filter((item) => item.categoryId !== categoryId)
       );
-  
+
       console.log("Category deleted successfully");
     } catch (error) {
       console.error("Error deleting category:", error);
@@ -98,101 +97,118 @@ const AddCategory = () => {
     padding: "6px 6px",
   };
 
-  const CustomModal = styled(Modal)(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImageFile(file);
-  };
-
-  const handleEditImageChange = (event) => {
-    const file = event.target.files[0];
-    setEditImageFile(file);
-  };
-
   const handleTitleChange = (event) => {
     setCategoryTitle(event.target.value);
   };
 
-  const handleDeviceChange = (event) => {
-    setSelectedDevice(event.target.value);
-  };
 
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log("Submitted:", imageFile, categoryTitle, selectedDevice);
-
-    const formData = new FormData();
-    formData.append("image", imageFile);
-    formData.append("title", categoryTitle);
-    formData.append("device", selectedDevice);
-
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload-image`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to upload image");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Image uploaded successfully:", data);
-        handleCloseAddModal();
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
+  
+    const newCategory = {
+      title: categoryTitle,
+      image: categoryImageUrl,
+    
+      dishes: [],
+    };
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
       });
+  
+      if (!response.ok) {
+        throw new Error("Failed to add category");
+      }
+  
+      const newCategoryData = await response.json();
+      console.log("Category added successfully:", newCategoryData);
+  
+      setMenuItems((prevItems) => [...prevItems, newCategoryData.data]);
+      handleCloseAddModal();
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  };
+  
+
+
+  const handleSaveEditChanges = async (event) => {
+    event.preventDefault();
+
+    const updatedCategory = {
+      title: categoryTitle,
+      image: editImageFile ? await uploadImage(editImageFile) : selectedCategory.image,
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/categories/${selectedCategory.categoryId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedCategory),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update category");
+      }
+
+      const data = await response.json();
+      console.log("Category updated successfully:", data);
+
+      setMenuItems((prevItems) =>
+        prevItems.map((item) =>
+          item.categoryId === selectedCategory.categoryId
+            ? { ...item, title: categoryTitle, image: updatedCategory.image }
+            : item
+        )
+      );
+
+      handleCloseEditModal();
+    } catch (error) {
+      console.error("Error updating category:", error);
+    }
   };
 
-  // const handleEditSubmit = (event) => {
-  //   event.preventDefault();
-  //   if (!selectedCategory) return;
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
 
-  //   const formData = new FormData();
-  //   if (editImageFile) {
-  //     formData.append("image", editImageFile);
-  //   }
-  //   formData.append("title", categoryTitle || selectedCategory.title);
-  //   formData.append("device", selectedDevice || selectedCategory.device);
-  //   formData.append("id", selectedCategory._id); 
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload-image`, {
+        method: "POST",
+        body: formData,
+      });
 
-  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/api/categories/${ca}`, {
-  //     method: "POST",
-  //     body: formData,
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Failed to update category");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       console.log("Category updated successfully:", data);
-  //       setMenuItems((prevItems) =>
-  //         prevItems.map((item) =>
-  //           item._id === data._id ? data : item
-  //         )
-  //       );
-  //       handleCloseEditModal();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating category:", error);
-  //     });
-  // };
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+      const data = await response.json();
+      return data.imageUrl; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
-  const handleOpenAddModal = () => setOpenAddModal(true);
+  const handleOpenAddModal = () => {
+    setCategoryTitle(""); 
+    setCategoryImageUrl(""); 
+    setOpenAddModal(true);
+  };
+  
   const handleCloseAddModal = () => setOpenAddModal(false);
 
   const handleOpenEditModal = (category) => {
     setSelectedCategory(category);
     setCategoryTitle(category.title);
-    setSelectedDevice(category.device || "");
     setOpenEditModal(true);
   };
 
@@ -207,26 +223,24 @@ const AddCategory = () => {
       >
         Add Category
       </Button>
-      <CustomModal
+      <Modal
         open={openAddModal}
         onClose={handleCloseAddModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="modal-add-title"
+        aria-describedby="modal-add-description"
       >
         <Box sx={modalStyle}>
           <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
             Add New Category
           </Typography>
           <form onSubmit={handleFormSubmit}>
-            <label htmlFor="image-upload" style={{ marginBottom: 10 }}>
-              Select Image:
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="image-upload"
-              onChange={handleImageChange}
-              style={{ marginBottom: 10 }}
+            <TextField
+              label="Category Image URL"
+              variant="outlined"
+              fullWidth
+              value={categoryImageUrl}
+              onChange={(e) => setCategoryImageUrl(e.target.value)}
+              sx={{ marginBottom: 2 }}
             />
             <TextField
               label="Category Title"
@@ -249,9 +263,9 @@ const AddCategory = () => {
             </Button>
           </form>
         </Box>
-      </CustomModal>
+      </Modal>
 
-      <CustomModal
+      <Modal
         open={openEditModal}
         onClose={handleCloseEditModal}
         aria-labelledby="modal-edit-title"
@@ -261,16 +275,14 @@ const AddCategory = () => {
           <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
             Edit Category
           </Typography>
-          <form >
-            <label htmlFor="edit-image-upload" style={{ marginBottom: 10 }}>
-              Select New Image (optional):
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="edit-image-upload"
-              onChange={handleEditImageChange}
-              style={{ marginBottom: 10 }}
+          <form onSubmit={handleSaveEditChanges}>
+            <TextField
+              label="Category Image URL"
+              variant="outlined"
+              fullWidth
+              value={selectedCategory ? selectedCategory.image : ""}
+              onChange={(e) => setSelectedCategory({ ...selectedCategory, image: e.target.value })}
+              sx={{ marginBottom: 2 }}
             />
             <TextField
               label="Category Title"
@@ -293,17 +305,17 @@ const AddCategory = () => {
             </Button>
           </form>
         </Box>
-      </CustomModal>
+      </Modal>
 
       <Grid container spacing={2}>
-        {menuItems.map((category, index) => (
+        {menuItems.map((category) => (
           <Grid
             item
             xs={12}
             sm={6}
             md={4}
             lg={4}
-            key={index}
+            key={category.categoryId}
             style={{ marginBottom: "20px", marginTop: "20px" }}
           >
             <CustomCard>

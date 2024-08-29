@@ -1,6 +1,9 @@
+/* The above code is a React component called `AddDishForm` that allows users to add new dishes to a
+menu. Here is a breakdown of what the code is doing: */
 import React, { useEffect, useState } from 'react';
 import { styled } from "@mui/material/styles";
 import { Button, Typography, Container, Box, MenuItem, Select, InputLabel, FormControl, Card, CardContent, Typography as CardTypography, CardMedia, Grid, Modal, TextField } from '@mui/material';
+
 
 const CustomCard = styled(Card)(({ theme }) => ({
     display: "flex",
@@ -25,8 +28,23 @@ const AddDishForm = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedDish, setSelectedDish] = useState(null);
     const [dishName, setDishName] = useState('');
+    const [dishImage, setDishImage] = useState('');
     const [dishDescription, setDishDescription] = useState('');
     const [dishPrice, setDishPrice] = useState('');
+    
+    const [newDishName, setNewDishName] = useState('');
+    const [newDishImage, setNewDishImage] = useState('');
+    const [newDishDescription, setNewDishDescription] = useState('');
+    const [newDishPrice, setNewDishPrice] = useState('');
+
+
+    const addToCartBtnStyle = {
+        backgroundColor: "#ffd93cf0",
+        fontWeight: "900",
+        color: "#26120fbd",
+        padding: "6px 6px",
+      };
+    
 
     useEffect(() => {
         const fetchMenuItems = async () => {
@@ -46,7 +64,7 @@ const AddDishForm = () => {
 
     useEffect(() => {
         if (selectedCategory) {
-            const category = menuItems.find(cat => cat._id === selectedCategory);
+            const category = menuItems.find(cat => cat.categoryId === selectedCategory);
             if (category) {
                 setDishes(category.dishes);
             } else {
@@ -69,6 +87,7 @@ const AddDishForm = () => {
         setDishName(dish.name);
         setDishDescription(dish.description);
         setDishPrice(dish.price);
+        setDishImage(dish.image); 
         setEditModalOpen(true);
     };
 
@@ -77,15 +96,49 @@ const AddDishForm = () => {
         setSelectedDish(null);
     };
 
-    const handleSaveChanges = () => {
-        // Implement save changes logic here
-        console.log('Updated Dish:', { dishName, dishDescription, dishPrice });
-        handleCloseEditModal();
-    };
-
-    const deleteDish = async (categoryId, dishId) => {
+    const handleSaveChanges = async () => {
+        if (!selectedDish) return;
+    
+        const updatedDish = {
+            name: dishName,
+            description: dishDescription,
+            price: dishPrice,
+            image: dishImage
+        };
+    
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/dish/${categoryId}/${dishId}`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/dishes/${selectedDish._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedDish),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to update dish');
+            }
+    
+            const result = await response.json();
+            console.log(result.message);
+    
+            // Update local state
+            setDishes(dishes.map(dish =>
+                dish._id === selectedDish._id ? { ...dish, ...updatedDish } : dish
+            ));
+    
+            handleCloseEditModal();
+        } catch (error) {
+            console.error('Error updating dish:', error);
+            alert('Failed to update dish.');
+        }
+    };
+    
+    const handleDeleteDish = async (dishId) => {
+        if (!selectedCategory) return;
+
+        try {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/dishes/${dishId}`, {
                 method: 'DELETE',
             });
 
@@ -93,27 +146,62 @@ const AddDishForm = () => {
                 throw new Error('Failed to delete dish');
             }
 
-            const data = await response.json();
-            console.log(data.message);  // Optionally log the response message
-            return true;
+            const result = await response.json();
+            console.log(result.message);
+
+            
+            setDishes(dishes.filter(dish => dish._id !== dishId));
         } catch (error) {
             console.error('Error deleting dish:', error);
-            return false;
+            alert('Failed to delete dish.');
         }
     };
 
-    const handleDeleteDish = async (dishId) => {
-        if (selectedCategory) {
-            const success = await deleteDish(selectedCategory, dishId);
-            if (success) {
-                // Update local state to reflect deletion
-                setDishes(dishes.filter(dish => dish._id !== dishId));
-            } else {
-                // Handle error appropriately (e.g., show an error message to the user)
-                alert('Failed to delete the dish.');
+    const handleAddDish = async (event) => {
+        event.preventDefault();
+    
+        if (!selectedCategory) {
+            alert('Please select a category.');
+            return;
+        }
+    
+        const newDish = {
+            name: newDishName,
+            description: newDishDescription,
+            price: `$${newDishPrice}`,  
+            image: newDishImage,
+        };
+    
+        try {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/categories/${selectedCategory}/dishes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newDish),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to add dish');
             }
+    
+            const result = await response.json();
+            console.log(result.message);
+    
+            // Update local state
+            setDishes([...dishes, { ...newDish, _id: result.data._id }]);
+    
+            // Clear form fields
+            setNewDishName('');
+            setNewDishImage('');
+            setNewDishDescription('');
+            setNewDishPrice('');
+        } catch (error) {
+            console.error('Error adding dish:', error);
+            alert('Failed to add dish.');
         }
     };
+    
 
     return (
         <Container maxWidth="md">
@@ -122,101 +210,150 @@ const AddDishForm = () => {
                     Add Dish
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="category-label">Category</InputLabel>
-                        <Select
-                            labelId="category-label"
+                    <TextField fullWidth sx={{ mb: 2 }}  id="outlined-select-currency"
+                    select 
+                  label="Select Category"
+        
+         
                             value={selectedCategory}
                             onChange={handleCategoryChange}
                             required
-                            name="category"
-                        >
-                            {menuItems.map((category) => (
-                                <MenuItem key={category._id} value={category._id}>
+                           > {menuItems.map((category) => (
+                                <MenuItem key={category._id} value={category.categoryId}>
                                     {category.title}
                                 </MenuItem>
                             ))}
-                        </Select>
-                    </FormControl>
-                    <Button type="submit" variant="contained" color="primary">
-                        Add Dish
-                    </Button>
+                      
+                       
+                    </TextField>
+                    
+
                 </form>
                 {selectedCategory && (
                     <Box sx={{ mt: 4 }}>
                         <Typography variant="h6" gutterBottom>
-                            Dishes
+                            Add New Dish
                         </Typography>
-                        <Grid container spacing={2}>
-                            {dishes.length > 0 ? (
-                                dishes.map((dish) => (
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={6}
-                                        md={4}
-                                        lg={4}
-                                        key={dish._id}
-                                        style={{ marginBottom: "20px" }}
-                                    >
-                                        <CustomCard>
-                                            <CardMedia
-                                                component="img"
-                                                height="140"
-                                                image={dish.image}
-                                                alt={dish.name}
-                                            />
-                                            <CardContent>
-                                                <CardTypography variant="h6">
-                                                    {dish.name}
-                                                </CardTypography>
-                                                <CardTypography color="textSecondary">
-                                                    {dish.description}
-                                                </CardTypography>
-                                                <CardTypography color="textPrimary">
-                                                    {dish.price}
-                                                </CardTypography>
-                                                <Grid
-                                                    container
-                                                    style={{
-                                                        display: 'flex',
-                                                        gap: '25px',
-                                                        width: '100%',
-                                                    }}
-                                                >
-                                                    <Button
-                                                        variant="contained"
-                                                        onClick={() => handleOpenEditModal(dish)}
+                        <form onSubmit={handleAddDish}>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                               
+                                <TextField
+                                    id="new-dish-name"
+                                    label="Dish Name"
+                                    value={newDishName}
+                                    onChange={(e) => setNewDishName(e.target.value)}
+                                    required
+                                />
+                            </FormControl>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                
+                                <TextField
+                                    id="new-dish-description"
+                                    label="Dish Description"
+                                    value={newDishDescription}
+                                    onChange={(e) => setNewDishDescription(e.target.value)}
+                                    required
+                                />
+                            </FormControl>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                              
+                                <TextField
+                                    id="new-dish-price"
+                                    label="Dish Price"
+                                    value={newDishPrice}
+                                    onChange={(e) => setNewDishPrice(e.target.value)}
+                                    required
+                                />
+                            </FormControl>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                
+                                <TextField
+                                    id="new-dish-image"
+                                    label="Dish Image URL"
+                                    value={newDishImage}
+                                    onChange={(e) => setNewDishImage(e.target.value)}
+                                    required
+                                />
+                            </FormControl>
+                            <Button type="submit" variant="contained"  style={addToCartBtnStyle} color="primary">
+                                Add Dish
+                            </Button>
+                        </form>
+                        <Box sx={{ mt: 4 }}>
+                            <Typography variant="h6" gutterBottom>
+                                Dishes
+                            </Typography>
+                            <Grid container spacing={2}>
+                                {dishes.length > 0 ? (
+                                    dishes.map((dish) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            key={dish._id}
+                                            style={{ marginBottom: "20px" }}
+                                        >
+                                            <CustomCard>
+                                                <CardMedia
+                                                    component="img"
+                                                    height="140"
+                                                    image={dish.image}
+                                                    alt={dish.name}
+                                                />
+                                                <CardContent>
+                                                    <CardTypography variant="h6">
+                                                        {dish.name}
+                                                    </CardTypography>
+                                                    <CardTypography color="textSecondary">
+                                                        {dish.description}
+                                                    </CardTypography>
+                                                    <CardTypography color="textPrimary">
+                                                        {dish.price}
+                                                    </CardTypography>
+                                                    <Grid
+                                                        container
                                                         style={{
-                                                            backgroundColor: "#FFA500",
-                                                            fontWeight: "900",
-                                                            color: "white",
-                                                            padding: "10px 20px",
+                                                            display: 'flex',
+                                                            gap: '25px',
+                                                            width: '100%',
                                                         }}
                                                     >
-                                                        Edit
-                                                    </Button>
-                                                    <Button
-                                                        variant="contained"
-                                                        onClick={() => handleDeleteDish(dish._id)}
-                                                        style={{
-                                                            backgroundColor: "red",
-                                                            fontWeight: "900",
-                                                            color: "white",
-                                                            padding: "10px 20px",
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                </Grid>
-                                            </CardContent>
-                                        </CustomCard>
-                                    </Grid>
-                                ))
-                            ) : (
-                                <Typography>No dishes available for this category.</Typography>
-                            )}
-                        </Grid>
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={() => handleOpenEditModal(dish)}
+                                                            style={{
+                                                                backgroundColor: "#FFA500",
+                                                                fontWeight: "900",
+                                                                color: "white",
+                                                                padding: "10px 20px",
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={() => handleDeleteDish(dish._id)}
+                                                            style={{
+                                                                backgroundColor: "red",
+                                                                fontWeight: "900",
+                                                                color: "white",
+                                                                padding: "10px 20px",
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </Grid>
+                                                </CardContent>
+                                            </CustomCard>
+                                        </Grid>
+                                    ))
+                                ) : (
+                                    <Typography>No dishes available for this category.</Typography>
+                                )}
+                            </Grid>
+                        </Box>
                     </Box>
                 )}
             </Box>
@@ -260,6 +397,13 @@ const AddDishForm = () => {
                         label="Price"
                         value={dishPrice}
                         onChange={(e) => setDishPrice(e.target.value)}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                    />
+                    <TextField
+                        label="Image URL"
+                        value={dishImage}
+                        onChange={(e) => setDishImage(e.target.value)}
                         fullWidth
                         sx={{ mt: 2 }}
                     />

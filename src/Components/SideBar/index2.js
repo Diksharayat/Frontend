@@ -96,7 +96,7 @@ export default function PersistentDrawerLeft(props) {
 
   useEffect(() => {
     const handleResize = () => {
-      setOpen(window.innerWidth >= 768); // Adjust this width according to your design's responsiveness
+      setOpen(window.innerWidth >= 768);
     };
 
     window.addEventListener("resize", handleResize);
@@ -335,6 +335,7 @@ useEffect(() => {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
+            backgroundColor: "#5b0707",
             boxSizing: "border-box",
 
           },
@@ -364,7 +365,7 @@ useEffect(() => {
               />
             </IconButton>
           </DrawerHeader>
-          <Divider />
+          <Divider sx={{ borderColor: 'white' }} />
           <List component="nav" aria-labelledby="nested-list-subheader" style={{backgroundColor:"#5b0707"}}>
           {menuItems?.map((item) => (
   <NavLink
